@@ -1,0 +1,146 @@
+body {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: 'Nunito', sans-serif;
+    padding-bottom: 3%; /* it must be the same size as footer height */
+    background-color: #2e2e2e;
+}
+
+h2 {
+    margin: 20px;
+    color: darkorange;
+}
+
+h5 {
+    display:flex;
+    flex-wrap: wrap;
+}
+
+.logo {
+    height: 20px;
+    margin-right: 10px;
+}
+
+.navbar-brand {
+    text-shadow: 0 0 2px #feffdf;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.form-section:nth-child(1) {
+    align-items: flex-start;
+}
+
+.registration-form {
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: center;
+    margin: 10px;
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+}
+
+input {
+    display: flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 4px 10px;
+    width: 100%;
+    min-width: 160px;
+    max-width: 255px;
+    border-radius: 10px;
+    justify-content: center;
+}
+
+input:focus {
+    outline: none;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    background-color: #5f5f5f;
+    color: white;
+    max-width: inherit;
+    width: 100%;
+    height: 3%;
+    min-height: 30px;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-text {
+    padding: 0;
+    margin: 0;
+}
+
+.button-form-submit {
+    width: 130px;
+    height: 40px;
+    background: linear-gradient(to bottom, #82E0AA 0%,#2ECC71 100%);
+    border: none;
+    border-radius: 5px;
+    position: relative;
+    border-bottom: 4px solid #28B463;
+    color: #2E4053;
+    font-weight: 600;
+    font-family: 'Open Sans', sans-serif;
+    text-shadow: 1px 1px 1px rgba(0,0,0,.4);
+    font-size: 18px;
+    text-align: left;
+    text-indent: 5px;
+    box-shadow: 0px 3px 0px 0px rgba(0,0,0,.2);
+    cursor: pointer;
+    display: block;
+    margin: 10px auto;
+    margin-bottom: 20px;
+  }
+
+.button-form-submit:active {
+    box-shadow: 0px 2px 0px 0px rgba(0,0,0,.2);
+    top: 1px;
+}
+
+.button-form-submit:focus {
+    outline: none;
+}
+  
+.button-form-submit:after {
+    content: "";
+    width: 0;
+    height: 0;
+    display: block;
+    border-top: 20px solid #1E8449;
+    border-bottom: 20px solid #1E8449;
+    border-left: 16px solid transparent;
+    border-right: 20px solid #1E8449;
+    position: absolute;
+    opacity: 0.6; 
+    right: 0;
+    top: 0;
+    border-radius: 0 5px 5px 0;  
+}
+
+.card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #D5F5E3;
+}

@@ -1,0 +1,22 @@
+version: "3"
+services:
+  web-register:
+    build:
+      context: .
+      dockerfile: ./Docker/register/Dockerfile
+    ports: ["8080:8880"]
+    volumes: [./MakaPaka:/MakaPaka]
+    environment:
+      FLASK_ENV: development
+      LOGIN_JWT_SECRET: $LOGIN_JWT_SECRET
+  web-files:
+    build:
+      context: .
+      dockerfile: ./Docker/dashboard/Dockerfile
+    ports: ["8081:8881"]
+    volumes: [./MakaPaka:/MakaPaka]
+    environment:
+      FLASK_ENV: development
+      LOGIN_JWT_SECRET: $LOGIN_JWT_SECRET
+  redis-db:
+    image: "redis:alpine"
