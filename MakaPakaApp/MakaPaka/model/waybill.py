@@ -8,13 +8,13 @@ class Waybill:
         self.__sender = sender
         self.__recipient = recipient
 
-    def generate_and_save(self, filename, path="./files/"):
+    def generate_and_save(self, filename, path="./"):
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", size=10)
         self.__add_table_to_pdf(pdf)
 
-        filename = self.__generate_filename(path)
+        filename = self.generate_filename(path, filename=filename)
         pdf.output(filename)
 
         return filename
@@ -33,10 +33,11 @@ class Waybill:
         pdf.multi_cell(col_width, font_size,
                        txt=self.__recipient.str_full(), border=1)
 
-    def __generate_filename(self, path):
-        unique_filename = uuid.uuid4().hex
+    def generate_filename(self, path, filename=None):
+        if filename is None:
+            filename = uuid.uuid4().hex
 
-        return "{}{}.pdf".format(path, unique_filename)
+        return "{}{}.pdf".format(path, filename)
 
 
 class Person:
@@ -62,7 +63,7 @@ class Person:
         return self.__phone
 
     def str_full(self):
-        return "{}\n{}\n{}".format(self.get_fullname(), self.get_phone, self.__address.str_full())
+        return "{}\n{}\n{}".format(self.get_fullname(), self.get_phone(), self.__address.str_full())
 
 
 class Address:

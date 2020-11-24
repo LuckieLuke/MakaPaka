@@ -28,7 +28,7 @@
                     <a class="nav-link" href="/packages">Paczki</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="/waybill">Dodaj paczkę</a>
+                    <a class="nav-link" href="/package">Dodaj paczkę</a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="/showdecoded">JWT Payload</a>
@@ -40,11 +40,15 @@
         </div>
     </nav>
 
+    {% if not packages %}
+    <p>NIE DODANO ŻADNEJ PACZKI</p>
+    {% else %}
     <li>
         {% for package in packages %}
-        <ul>{{package}}</ul>
+        <ul>{{package}} | <a href="/package/{{package}}"><button>Otwórz</button></a></ul>
         {% endfor %}
     </li>
+    {% endif %}
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"

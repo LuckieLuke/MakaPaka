@@ -1,15 +1,18 @@
 from flask import Flask, render_template, make_response, request
-from flask import url_for, redirect
+from flask import url_for, redirect, jsonify, send_file, send_from_directory
 import redis
 import logging
 import random
 import string
 import os
+import os.path
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 from jwt import decode, InvalidTokenError, encode
 import datetime
 from flask import send_file
 from model.waybill import *
+import json
+import ast
 
 
 app = Flask(__name__, static_url_path='')
@@ -21,6 +24,7 @@ ACCESS_EXPIRATION_TIME = 60*5
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = ACCESS_EXPIRATION_TIME
 
+FILES = 'files'
 FILES_PATH = 'files/'
 PATH_AND_FILENAME = 'path_and_filename'
 FILENAMES = 'filenames'
@@ -38,7 +42,7 @@ def list_packages():
     token = request.cookies.get('access')
     if valid(token):
         uname = request.cookies.get('uname')
-        files_code = db.hget(uname, 'files')
+        files_code = db.hget(uname, FILES)
         packages = db.smembers(files_code)
         if len(packages) > 0:
             response = prepare_cookies('packages.html', packages=packages)
@@ -49,7 +53,7 @@ def list_packages():
         return """<a href='https://localhost:8080/'>Wróć do strony głównej</a>"""
 
 
-@app.route('/waybill')
+@app.route('/package')
 def waybill():
     token = request.cookies.get('access')
     if valid(token):
@@ -59,25 +63,47 @@ def waybill():
         return """<a href='https://localhost:8080/'>Wróć do strony głównej</a>"""
 
 
-@app.route('/addwaybill', methods=['POST'])
+@app.route('/addpackage', methods=['POST'])
 def add_waybill():
     log.debug('Receive request to create a waybill.')
     form = request.form
     log.debug('Request form: {}.'.format(form))
 
     waybill = to_waybill(form)
-    save_waybill(waybill)
+    save_waybill(waybill, form)
 
     return redirect(url_for('list_packages'))
 
 
-@app.route('/showdecoded')
+@app.route('/package/<string:name>')
+def show_file(name):
+    uname = request.cookies.get('access')
+    uname = decode(uname, JWT_SECRET).get('uname')
+    file_data = ast.literal_eval(db.hget(FILES, name[:-4] + '_data'))
+
+    waybill = to_waybill(file_data)
+    path = FILES_PATH + name
+    log.debug(path)
+
+    if not os.path.isfile(path):
+        waybill.generate_and_save(filename=name[:-4], path=FILES_PATH)
+
+    try:
+        return send_file(path, attachment_filename=name)
+    except Exception as e:
+        log.error(e)
+
+    return redirect(url_for('list_packages'))
+
+
+@ app.route('/showdecoded')
 def showJWT():
     access = request.cookies.get('access')
     secret = decode(access, JWT_SECRET)
     return secret
 
 
+@ app.route('/package')
 def to_waybill(form):
     sender = to_sender(form)
     recipient = to_recipient(form)
@@ -124,16 +150,17 @@ def to_recipient_address(form):
     return addr
 
 
-def save_waybill(waybill):
-    fullname = waybill.generate_and_save(FILES_PATH)
+def save_waybill(waybill, form):
+    fullname = waybill.generate_filename(path=FILES_PATH)
     filename = os.path.basename(fullname)
+    log.debug('full: ' + fullname)
+    log.debug('file: ' + filename)
 
     uname = request.cookies.get('uname')
-    files = db.hget(uname, 'files')
+    files = db.hget(uname, FILES)
     db.sadd(files, filename)
-
-    log.debug('Saved waybill [fullname: {}, filename: {}].'.format(
-        fullname, filename))
+    db.hset(FILES, filename[:-4] + '_data', str(form.to_dict()))
+    db.hset(FILES, filename[:-4] + '_date', str(datetime.datetime.utcnow()))
 
 
 def valid(token):
