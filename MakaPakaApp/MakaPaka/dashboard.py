@@ -1,5 +1,6 @@
-from flask import Flask, render_template, make_response, request
+from flask import Flask, render_template, make_response, request, abort
 from flask import url_for, redirect, jsonify, send_file, send_from_directory
+from werkzeug.utils import secure_filename
 import redis
 import logging
 import random
@@ -43,14 +44,22 @@ def list_packages():
     if valid(token):
         uname = request.cookies.get('uname')
         files_code = db.hget(uname, FILES)
-        packages = db.smembers(files_code)
+        packages_names = db.smembers(files_code)
+        num = len(packages_names)
+        packages = []
+        for package in packages_names:
+            shortname = package[:-4]
+            date = (db.hget('files', shortname + '_date'))[:-7]
+            packages.append((package, date))
+
         if len(packages) > 0:
-            response = prepare_cookies('packages.html', packages=packages)
+            response = prepare_cookies(
+                'packages.html', packages=packages, number=num)
         else:
             response = prepare_cookies('packages.html')
         return response
     else:
-        return """<a href='https://localhost:8080/'>Wróć do strony głównej</a>"""
+        abort(403)
 
 
 @app.route('/package')
@@ -60,7 +69,7 @@ def waybill():
         response = prepare_cookies('addpackage.html')
         return response
     else:
-        return """<a href='https://localhost:8080/'>Wróć do strony głównej</a>"""
+        return redirect('https://localhost:8080/')
 
 
 @app.route('/addpackage', methods=['POST'])
@@ -153,8 +162,14 @@ def to_recipient_address(form):
 def save_waybill(waybill, form):
     fullname = waybill.generate_filename(path=FILES_PATH)
     filename = os.path.basename(fullname)
-    log.debug('full: ' + fullname)
-    log.debug('file: ' + filename)
+
+    if 'photo' in request.files:
+        photo = request.files['photo']
+        if photo.filename != '':
+            photo_name = secure_filename(photo.filename).split('.')
+            photo_name[0] = filename[:-4]
+            photo_name = '.'.join(photo_name)
+            photo.save(os.path.join(FILES_PATH, photo_name))
 
     uname = request.cookies.get('uname')
     files = db.hget(uname, FILES)
@@ -172,11 +187,12 @@ def valid(token):
     return True
 
 
-def prepare_cookies(template, packages=None):
+def prepare_cookies(template, packages=None, number=None):
     if packages is None:
         response = make_response(render_template(template))
     else:
-        response = make_response(render_template(template, packages=packages))
+        response = make_response(render_template(
+            template, packages=packages, number=number))
     session_id = request.cookies.get('session-id')
     uname = request.cookies.get('uname')
     exp = datetime.datetime.utcnow() + datetime.timedelta(seconds=ACCESS_EXPIRATION_TIME)
@@ -197,6 +213,21 @@ def prepare_cookies(template, packages=None):
         'access', access_token, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
     )
     return response
+
+
+@app.errorhandler(401)
+def page_unauthorized(error):
+    return render_template("errors/401.html", error=error)
+
+
+@app.errorhandler(403)
+def forbidden(error):
+    return render_template("errors/403.html", error=error)
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("errors/404.html", error=error)
 
 
 if __name__ == '__main__':

@@ -53,8 +53,8 @@ def home():
             'uname', uname, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
         )
         return response
-    else:
-        return render_template('index.html', is_logged=False, user=None)
+
+    return render_template('index.html', is_logged=False, user=None)
 
 
 @ app.route('/register', methods=['GET'])
@@ -66,8 +66,8 @@ def register():
 def checkAvailability(username):
     enc_username = username.encode('utf-8')
     hash_username = hashlib.sha512(enc_username).hexdigest()
-    exists = db.hgetall(hash_username)
-    if len(exists) == 0:
+    users = db.lrange('users', 0, -1)
+    if hash_username not in users:
         return make_response('go on', 404)
     else:
         return make_response('wait', 200)
@@ -96,6 +96,7 @@ def createUser():
             'birthdate': birthdate, 'city': city, 'street': street,
             'number': number, 'postcode': postcode, 'country': country}
     db.hmset(hash_login, data)
+    db.lpush('users', hash_login)
     return redirect(url_for("home")), 200
 
 
@@ -108,34 +109,37 @@ def login():
 def authorize():
     login = request.form['login'].encode('utf-8')
     hashed_login = hashlib.sha512(login).hexdigest()
-    password = request.form['password'].encode('utf-8')
-    hashed_pass = hashlib.sha512(password).hexdigest()
-    correct_password = db.hget(hashed_login, 'password')
-    if hashed_pass == correct_password:
-        session_id = ''.join(random.choice(
-            string.ascii_lowercase + string.digits) for _ in range(128))
-        db.hset(hashed_login, 'session_id', session_id)
-        response = make_response(redirect(url_for('home')))
-        response.set_cookie(
-            'session-id', session_id, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
-        )
-        response.set_cookie(
-            'uname', hashed_login, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
-        )
+    users = db.lrange('users', 0, -1)
 
-        exp = datetime.datetime.utcnow() + datetime.timedelta(seconds=ACCESS_EXPIRATION_TIME)
-        secret = ''.join(random.choice(
-            string.ascii_lowercase + string.digits) for _ in range(32))
-        access_token = encode(
-            {'uname': hashed_login, 'exp': exp,
-                'secret': secret}, JWT_SECRET, 'HS256'
-        )
-        response.set_cookie(
-            'access', access_token, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
-        )
-        return response
-    else:
-        return render_template('login.html')
+    if hashed_login in users:
+        password = request.form['password'].encode('utf-8')
+        hashed_pass = hashlib.sha512(password).hexdigest()
+        correct_password = db.hget(hashed_login, 'password')
+        if hashed_pass == correct_password:
+            session_id = ''.join(random.choice(
+                string.ascii_lowercase + string.digits) for _ in range(128))
+            db.hset(hashed_login, 'session_id', session_id)
+            response = make_response(redirect(url_for('home')))
+            response.set_cookie(
+                'session-id', session_id, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
+            )
+            response.set_cookie(
+                'uname', hashed_login, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
+            )
+
+            exp = datetime.datetime.utcnow() + datetime.timedelta(seconds=ACCESS_EXPIRATION_TIME)
+            secret = ''.join(random.choice(
+                string.ascii_lowercase + string.digits) for _ in range(32))
+            access_token = encode(
+                {'uname': hashed_login, 'exp': exp,
+                    'secret': secret}, JWT_SECRET, 'HS256'
+            )
+            response.set_cookie(
+                'access', access_token, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
+            )
+            return response
+
+    return render_template('login.html')
 
 
 @ app.route('/logout', methods=['GET', 'POST'])
@@ -152,6 +156,27 @@ def logout():
 @ app.route('/getuser/<username>')
 def getUser(username):
     return db.hgetall(username)
+
+
+@app.route('/listusers')
+def listusers():
+    users = db.lrange('users', 0, -1)
+    return '\n'.join(users)
+
+
+@app.errorhandler(401)
+def page_unauthorized(error):
+    return render_template("errors/401.html", error=error)
+
+
+@app.errorhandler(403)
+def forbidden(error):
+    return render_template("errors/403.html", error=error)
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("errors/404.html", error=error)
 
 
 if __name__ == '__main__':

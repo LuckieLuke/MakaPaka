@@ -68,7 +68,7 @@ h3+h4, h4+h5 {
     margin-top: 20px;
 }
 
-.offers-table {
+.details-table {
     border-collapse: collapse;
     margin: 10px 0 20px 0;
     font-size: 0.9em;
@@ -77,42 +77,42 @@ h3+h4, h4+h5 {
     color: #2E2E2E;
 }
 
-.offers-table thead tr {
+.details-table thead tr {
     background-color: #72898F;
     color: whitesmoke;
     text-align: center;
 }
 
-.offers-table th,
-.offers-table td {
+.details-table th,
+.details-table td {
     padding: 12px 15px;
 }
 
-.offers-table tbody tr {
+.details-table tbody tr {
     border-bottom: 1px solid #dddddd;
 }
 
-.offers-table tbody tr:nth-of-type(even) {
+.details-table tbody tr:nth-of-type(even) {
     background-color: #e4e4e4;
     transition: 0.5s;
 }
 
-.offers-table tbody tr:nth-of-type(even):hover {
+.details-table tbody tr:nth-of-type(even):hover {
     background-color: #8AACAB;
     transition: 0.5s;
 }
 
-.offers-table tbody tr:nth-of-type(odd) {
+.details-table tbody tr:nth-of-type(odd) {
     background-color: #f8f8f8;
     transition: 0.5s;
 }
 
-.offers-table tbody tr:nth-of-type(odd):hover {
+.details-table tbody tr:nth-of-type(odd):hover {
     background-color: #8AACAB;
     transition: 0.5s;
 }
 
-.offers-table tbody tr:last-of-type {
+.details-table tbody tr:last-of-type {
     border-bottom: 2px solid #009879;
 }
 

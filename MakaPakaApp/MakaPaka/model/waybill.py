@@ -1,5 +1,5 @@
 import uuid
-
+import os
 from fpdf import FPDF
 
 
@@ -15,6 +15,12 @@ class Waybill:
         self.__add_table_to_pdf(pdf)
 
         filename = self.generate_filename(path, filename=filename)
+
+        if os.path.isfile(filename[:-4] + '.png'):
+            pdf.image(filename[:-4] + '.png', x=10, y=80, w=100)
+        elif os.path.isfile(filename[:-4] + '.jpeg'):
+            pdf.image(filename[:-4] + '.jpeg', x=10, y=80, w=100)
+
         pdf.output(filename)
 
         return filename

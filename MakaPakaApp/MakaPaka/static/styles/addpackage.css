@@ -133,3 +133,7 @@ input:-webkit-autofill:active  {
 .form-input:required, .form-input:invalid {
     box-shadow: none;
 }
+
+.photo-input {
+    margin-bottom: 15px;
+}

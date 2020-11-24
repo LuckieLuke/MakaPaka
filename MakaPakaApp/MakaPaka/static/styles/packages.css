@@ -9,6 +9,7 @@ body {
     font-family: sans-serif;
     background-color: #2e2e2e;
     color: white;
+    padding-bottom: 40px;
 }
 
 .logo {
@@ -18,4 +19,65 @@ body {
 
 .navbar-brand {
     text-shadow: 0 0 2px #feffdf;
+}
+
+.packages-table {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.details-table {
+    border-collapse: collapse;
+    margin: 10px 0 20px 0;
+    font-size: 0.9em;
+    width:40%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    color: #2E2E2E;
+}
+
+.details-table thead tr {
+    background-color: #72898F;
+    color: whitesmoke;
+    text-align: center;
+}
+
+.details-table th,
+.details-table td {
+    padding: 12px 15px;
+}
+
+.details-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.details-table tbody tr:nth-of-type(even) {
+    background-color: #e4e4e4;
+    transition: 0.5s;
+}
+
+.details-table tbody tr:nth-of-type(even):hover {
+    background-color: #8AACAB;
+    transition: 0.5s;
+}
+
+.details-table tbody tr:nth-of-type(odd) {
+    background-color: #f8f8f8;
+    transition: 0.5s;
+}
+
+.details-table tbody tr:nth-of-type(odd):hover {
+    background-color: #8AACAB;
+    transition: 0.5s;
+}
+
+.details-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.centered-col {
+    text-align: center;
 }

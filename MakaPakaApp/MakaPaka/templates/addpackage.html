@@ -44,50 +44,54 @@
     </header>
 
     <section class="form">
-        <form action="/addpackage" method="POST" class="waybills-form">
+        <form action="/addpackage" method="POST" class="waybills-form" enctype="multipart/form-data">
             <div class="whole-form-inside">
                 <div class="form-inputs">
                     <div class="form-part">
                         <h3>Dane Nadawcy</h3>
                         <div class="input-group">
                             <input id="sender_name" type="text" name="sender_name" class="form-input" placeholder="Imię"
-                                pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!">
+                                pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!" required>
                             <label for="sender_name" class="form-label">Imię</label>
                         </div>
 
                         <div class="input-group">
                             <input id="sender_surname" type="text" name="sender_surname" class="form-input"
-                                placeholder="Nazwisko" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!">
+                                placeholder="Nazwisko" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!"
+                                required>
                             <label for="sender_surname" class="form-label">Nazwisko</label>
                         </div>
 
                         <div class="input-group">
                             <input id="sender_phone" type="text" name="sender_phone" class="form-input"
-                                placeholder="Telefon">
+                                placeholder="Telefon" pattern="[0-9]+" title="Tylko cyfry!" required>
                             <label for="sender_phone" class="form-label">Telefon</label>
                         </div>
 
                         <div class="input-group">
                             <input id="sender_street" type="text" name="sender_street" class="form-input"
-                                placeholder="Ulica" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!">
+                                placeholder="Ulica" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!"
+                                required>
                             <label for="sender_street" class="form-label">Ulica</label>
                         </div>
 
                         <div class="input-group">
                             <input id="sender_city" type="text" name="sender_city" class="form-input"
-                                placeholder="Miasto" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!">
+                                placeholder="Miasto" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!"
+                                required>
                             <label for="sender_city" class="form-label">Miasto</label>
                         </div>
 
                         <div class="input-group">
                             <input id="sender_code" type="text" name="sender_code" class="form-input"
-                                placeholder="Kod pocztowy">
+                                placeholder="Kod pocztowy" pattern="[0-9]{2}-[0-9]{3}" title="XX-YYY" required>
                             <label for="sender_code" class="form-label">Kod pocztowy</label>
                         </div>
 
                         <div class="input-group">
                             <input id="sender_country" type="text" name="sender_country" class="form-input"
-                                placeholder="Kraj" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!">
+                                placeholder="Kraj" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!"
+                                required>
                             <label for="sender_country" class="form-label">Kraj</label>
                         </div>
                     </div>
@@ -96,47 +100,58 @@
                         <h3>Dane odbiorcy</h3>
                         <div class="input-group">
                             <input id="recipient_name" type="text" name="recipient_name" class="form-input"
-                                placeholder="Imię" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!">
+                                placeholder="Imię" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!"
+                                required>
                             <label for="recipient_name" class="form-label">Imię</label>
                         </div>
 
                         <div class="input-group">
                             <input id="recipient_surname" type="text" name="recipient_surname" class="form-input"
-                                placeholder="Nazwisko" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!">
+                                placeholder="Nazwisko" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!"
+                                required>
                             <label for="recipient_surname" class="form-label">Nazwisko</label>
                         </div>
 
                         <div class="input-group">
                             <input id="recipient_phone" type="text" name="recipient_phone" class="form-input"
-                                placeholder="Telefon">
+                                placeholder="Telefon" pattern="[0-9]+" title="Tylko cyfry!" required>
                             <label for="recipient_phone" class="form-label">Telefon</label>
                         </div>
 
                         <div class="input-group">
                             <input id="recipient_street" type="text" name="recipient_street" class="form-input"
-                                placeholder="Ulica" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!">
+                                placeholder="Ulica" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!"
+                                required>
                             <label for="recipient_street" class="form-label">Ulica</label>
                         </div>
 
                         <div class="input-group">
                             <input id="recipient_city" type="text" name="recipient_city" class="form-input"
-                                placeholder="Miasto" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!">
+                                placeholder="Miasto" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!"
+                                required>
                             <label for="recipient_city" class="form-label">Miasto</label>
                         </div>
 
                         <div class="input-group">
                             <input id="recipient_code" type="text" name="recipient_code" class="form-input"
-                                placeholder="Kod pocztowy">
+                                placeholder="Kod pocztowy" pattern="[0-9]{2}-[0-9]{3}" title="XX-YYY" required>
                             <label for="recipient_code" class="form-label">Kod pocztowy</label>
                         </div>
 
                         <div class="input-group">
                             <input id="recipient_country" type="text" name="recipient_country" class="form-input"
-                                placeholder="Kraj" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!">
+                                placeholder="Kraj" pattern="[a-zA-Z]+" title="Tylko litery (bez polskich znaków)!"
+                                required>
                             <label for="recipient_country" class="form-label">Kraj</label>
                         </div>
                     </div>
                 </div>
+
+                <h4>Chcesz dołączyć zdjęcie paczki?</h4>
+                <input id="photo" type="file" name="photo" class="photo-input" placeholder="Zdjęcie paczki"
+                    accept="image/png, image/jpeg">
+                <label for="photo" class="form-label">Zdjęcie paczki</label>
+
                 <button type="submit" class="btn btn-primary submit">Wyślij</button>
             </div>
         </form>

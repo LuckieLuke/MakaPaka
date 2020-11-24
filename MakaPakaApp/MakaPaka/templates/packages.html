@@ -40,15 +40,34 @@
         </div>
     </nav>
 
-    {% if not packages %}
-    <p>NIE DODANO ŻADNEJ PACZKI</p>
-    {% else %}
-    <li>
-        {% for package in packages %}
-        <ul>{{package}} | <a href="/package/{{package}}"><button>Otwórz</button></a></ul>
-        {% endfor %}
-    </li>
-    {% endif %}
+    <section class="packages-table">
+        {% if not packages %}
+        <p>NIE DODANO ŻADNEJ PACZKI</p>
+        {% else %}
+        <h2>Liczba nadanych paczek: {{number}}</h2>
+        <h3>Twoje listy przewozowe:</h3>
+        <table class="details-table">
+            <thead>
+                <tr>
+                    <th>ID listu przewozowego</th>
+                    <th>Data rejestracji</th>
+                    <th>Pobierz</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for package in packages %}
+                <tr>
+                    <td>{{package[0]}}</td>
+                    <td class="centered-col">{{package[1]}}</td>
+                    <td class="centered-col"><a href="/package/{{package[0]}}"><button
+                                class="btn btn-success">Otwórz</button></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h5>Wygenerowanie dokumentu ze zdjęciem może zająć parę sekund, poczekaj cierpliwie!</h5>
+        {% endif %}
+    </section>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
