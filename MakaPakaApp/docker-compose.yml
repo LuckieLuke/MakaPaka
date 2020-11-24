@@ -8,7 +8,7 @@ services:
     volumes: [./MakaPaka:/MakaPaka]
     environment:
       FLASK_ENV: development
-      LOGIN_JWT_SECRET: $LOGIN_JWT_SECRET
+      JWT_SECRET: $JWT_SECRET
   web-files:
     build:
       context: .
@@ -17,6 +17,6 @@ services:
     volumes: [./MakaPaka:/MakaPaka]
     environment:
       FLASK_ENV: development
-      LOGIN_JWT_SECRET: $LOGIN_JWT_SECRET
+      JWT_SECRET: $JWT_SECRET
   redis-db:
     image: "redis:alpine"

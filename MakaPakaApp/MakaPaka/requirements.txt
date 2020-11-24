@@ -3,3 +3,5 @@ redis
 pyopenssl
 flask-jwt-extended 
 gunicorn
+pyjwt
+fpdf

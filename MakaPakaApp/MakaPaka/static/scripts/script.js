@@ -1,11 +1,19 @@
 const GET = "GET";
 const POST = "post";
-const URL = "https://pamiw2020registration.herokuapp.com/";
+const URL = "https://localhost:8080/";
 
 const LOGIN_FIELD_ID = "login";
 const PESEL_FIELD_ID = "pesel";
 const PASSWORD_FIELD_ID = "password";
 const RE_PASSWORD_FIELD_ID = "second_password";
+const NAME_ID = "name";
+const SURNAME_ID = "surname";
+const BIRTHDATE_ID = "birthdate";
+const CITY_ID = "city";
+const STREET_ID = "street";
+const NUMBER_ID = "number";
+const POSTCODE_ID = "postcode";
+const COUNTRY_ID = "country";
 
 var HTTP_STATUS = { OK: 200, CREATED: 201, NOT_FOUND: 404 };
 
@@ -14,6 +22,15 @@ let loginField = document.getElementById(LOGIN_FIELD_ID);
 let peselField = document.getElementById(PESEL_FIELD_ID);
 let passwordField = document.getElementById(PASSWORD_FIELD_ID);
 let secondPasswordField = document.getElementById(RE_PASSWORD_FIELD_ID);
+let nameField = document.getElementById(NAME_ID);
+let surnameField = document.getElementById(SURNAME_ID);
+let birthdateField = document.getElementById(BIRTHDATE_ID);
+let cityField = document.getElementById(CITY_ID);
+let streetField = document.getElementById(STREET_ID);
+let numberField = document.getElementById(NUMBER_ID);
+let postcodeField = document.getElementById(POSTCODE_ID);
+let countryField = document.getElementById(COUNTRY_ID);
+
 let isLogAvailable;
 
 prepareAllFieldsValidators();
@@ -28,7 +45,7 @@ registrationForm.addEventListener("submit", function (event) {
         console.log(event.srcElement[i].value);
     }
 
-    if (isProper(LOGIN_FIELD_ID) && isProper(PESEL_FIELD_ID) && isProper(PASSWORD_FIELD_ID) && isProper(RE_PASSWORD_FIELD_ID) && isLogAvailable) {
+    if (isLogAvailable && isProperSecondPassword() && isProperPesel() && isProperPassword()) {
         submitRegisterForm();
     } else {
         console.log("Nie rejestruję, bo pola nie są poprawne!");
@@ -36,7 +53,7 @@ registrationForm.addEventListener("submit", function (event) {
 });
 
 function submitRegisterForm() {
-    let registerUrl = URL + "register";
+    let registerUrl = URL + "create";
 
     let registerParams = {
         method: POST,
@@ -91,15 +108,6 @@ function prepareAllFieldsValidators() {
         }
         else if (loginInput.length == 0) {
             removeWarningMessage("loginWarning");
-        }
-    });
-
-    peselField.addEventListener("change", function () {
-        var peselInput = peselField.value.trim();
-        updateFieldValidityMessage("peselWarning", ["Niepoprawny PESEL"], PESEL_FIELD_ID);
-
-        if (peselInput.length == 0) {
-            removeWarningMessage("peselWarning");
         }
     });
 
@@ -254,8 +262,6 @@ function updateLoginAvailabilityMessage() {
     isLoginAvailable().then(function (isAvailable) {
         if (!isAvailable) {
             showWarningMessage(warningElemId, [warningAvailabilityMessage], LOGIN_FIELD_ID);
-        } else if (!isProper(LOGIN_FIELD_ID)) {
-            showWarningMessage(warningElemId, ["Login musi mieć:", "- tylko litery", "- minimum 5 znaków"], LOGIN_FIELD_ID);
         } else {
             removeWarningMessage(warningElemId);
         }
@@ -284,6 +290,27 @@ function isProper(fieldID) {
     else if (fieldID == PASSWORD_FIELD_ID) {
         return isProperPassword();
     }
+    else if (fieldID == NAME_ID) {
+        return isProperName();
+    }
+    else if (fieldID == SURNAME_ID) {
+        return isProperSurname();
+    }
+    else if (fieldID == CITY_ID) {
+        return isProperCity();
+    }
+    else if (fieldID == NUMBER_ID) {
+        return isProperNumber();
+    }
+    else if (fieldID == COUNTRY_ID) {
+        return isProperCountry();
+    }
+    else if (fieldID == POSTCODE_ID) {
+        return isProperPostcode();
+    }
+    else if (fieldID == STREET_ID) {
+        return isProperStreet();
+    }
     else {
         return isProperSecondPassword();
     }
@@ -294,6 +321,14 @@ function clearForm() {
     peselField.value = "";
     passwordField.value = "";
     secondPasswordField.value = "";
+    nameField.value = "";
+    surnameField.value = "";
+    birthdateField.value = "";
+    cityField.value = "";
+    numberField.value = "";
+    streetField.value = "";
+    postcodeField.value = "";
+    countryField.value = "";
 }
 
 function notifyAboutRegistration() {

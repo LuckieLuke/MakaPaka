@@ -1,0 +1,21 @@
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    font-family: sans-serif;
+    background-color: #2e2e2e;
+    color: white;
+}
+
+.logo {
+    height: 20px;
+    margin-right: 10px;
+}
+
+.navbar-brand {
+    text-shadow: 0 0 2px #feffdf;
+}

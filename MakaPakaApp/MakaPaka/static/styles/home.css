@@ -14,8 +14,13 @@ h2 {
     color: darkorange;
 }
 
+h3 {
+    text-align: center;
+}
+
 h4 {
     color: #f8f8f8;
+    text-align: center;
 }
 
 .logo {
@@ -132,6 +137,7 @@ h3+h4, h4+h5 {
     opacity: 70%;
     padding: 10px;
     position: relative;
+    margin-bottom: 5px;
 }
 
 .extra-details h5 {

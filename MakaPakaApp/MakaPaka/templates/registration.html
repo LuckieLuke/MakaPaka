@@ -7,10 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link href="styles/registration.css" rel="stylesheet" type="text/css">
     <link rel="icon" href="images/poop-white.png" type="image/x-icon" />
-    <link href='http://fonts.googleapis.com/css?family=Cambay&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Cambay&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 </head>
 
@@ -18,7 +18,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="/"><img src="images/makapaka.png" class="logo" alt="logo" />MakaPaka</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -29,6 +29,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/register">Zarejestruj</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Zaloguj</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -38,23 +41,70 @@
         <h2>Rejestracja</h2>
 
         <form id="registration-form" class="registration-form">
-            <label>Login
-                <input id="login" type="text" name="login" required />
-            </label>
+            <div class="form-container">
+                <div class="first-half-form">
+                    <label>Login
+                        <input id="login" type="text" name="login" pattern="[a-zA-Z]{4,}"
+                            title="Tylko litery i minimum 4 znaki!" required />
+                    </label>
 
-            <label>PESEL
-                <input id="pesel" type="text" name="pesel" required />
-            </label>
+                    <label>PESEL
+                        <input id="pesel" type="text" name="pesel" pattern="[0-9]{11}" title="11 cyfr" required />
+                    </label>
 
-            <label>Hasło
-                <input id="password" type="password" name="password" required />
-            </label>
+                    <label>Hasło
+                        <input id="password" type="password" name="password" required />
+                    </label>
 
-            <label>Powtórz hasło
-                <input id="second_password" type="password" name="second_password" required />
-            </label>
+                    <label>Powtórz hasło
+                        <input id="second_password" type="password" name="second_password" required />
+                    </label>
 
+                    <label>Imię
+                        <input id="name" type="text" name="name" pattern="[a-zA-Z]+"
+                            title="Tylko litery (bez polskich znaków)!" required />
+                    </label>
+
+                    <label>Nazwisko
+                        <input id="surname" type="text" name="surname" pattern="[a-zA-Z]+"
+                            title="Tylko litery (bez polskich znaków)!" required />
+                    </label>
+                </div>
+
+                <div class="second-half-form">
+                    <label>Data urodzenia
+                        <input id="birthdate" type="text" name="birthdate" required />
+                    </label>
+
+                    <label>Miasto
+                        <input id="city" type="text" name="city" pattern="[a-zA-Z]+"
+                            title="Tylko litery (bez polskich znaków)!" required />
+                    </label>
+
+                    <label>Ulica
+                        <input id="street" type="text" name="street" pattern="[a-zA-Z]+"
+                            title="Tylko litery (bez polskich znaków)!" required />
+                    </label>
+
+                    <label>Numer
+                        <input id="number" type="text" name="number" title="Dopuszczalne są liczby i /" required />
+                    </label>
+
+                    <label>Kod pocztowy
+                        <input id="postcode" type="text" name="postcode" pattern="[0-9]{2}-[0-9]{3}" title="XX-YYY"
+                            required />
+                    </label>
+
+                    <label>Kraj
+                        <input id="country" type="text" name="country" pattern="[a-zA-Z]+"
+                            title="Tylko litery (bez polskich znaków)!" required />
+                    </label>
+
+                </div>
+            </div>
             <button class="button-form-submit" type="submit">Rejestruj</button>
+
+
         </form>
     </section>
 
@@ -64,11 +114,11 @@
 
     <script src="scripts/script.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-            crossorigin="anonymous"></script>
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-            crossorigin="anonymous"></script>
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

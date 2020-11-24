@@ -1,0 +1,144 @@
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    font-family: sans-serif;
+    background-color: #2e2e2e;
+    color: white;
+    padding-bottom: 56px;
+}
+
+.logo {
+    height: 20px;
+    margin-right: 10px;
+}
+
+.navbar-brand {
+    text-shadow: 0 0 2px #feffdf;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form {
+    width: 100%;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-part {
+    display: flex;
+    flex-direction: column;
+    margin: 2%;
+    border: 2px solid #1F618D;
+    padding: 1%;
+    background-color: #154360;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
+    border-radius: 5px;
+    width: 50%;
+    max-width: 350px;
+}
+
+.whole-form-inside {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 4px 10px;
+}
+
+.input-group {
+    position: relative;
+    padding: 15px 0 0;
+    margin-top: 10px;
+    width: 98%;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+  transition: background-color 10000s;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.form-input {
+    font-family: inherit;
+    width: 100%;
+    border: 0;
+    border-bottom: 2px solid #9b9b9b;
+    outline: 0;
+    font-size: 1.3rem;
+    padding-bottom: 7px;
+    padding-top: 10px;
+    color: #fff;
+    background: transparent;
+    transition: border-color 0.2s;
+}
+
+.form-input::placeholder {
+    color: transparent;
+}
+
+.form-input:placeholder-shown ~ .form-label {
+    font-size: 1.3rem;
+    cursor: text;
+    top: 20px;
+}
+
+.form-label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: #9b9b9b;
+}
+
+.form-input:focus {
+    padding-bottom: 6px;
+    font-weight: 700;
+    border-width: 3px;
+    border-image: linear-gradient(to right, #11998e, #38ef7d);
+    border-image-slice: 1;
+}
+
+.form-input:focus ~ .form-label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: #11998e;
+    font-weight: 700;
+}
+
+/* reset input */
+.form-input:required, .form-input:invalid {
+    box-shadow: none;
+}
