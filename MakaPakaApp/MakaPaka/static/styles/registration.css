@@ -12,11 +12,6 @@ h2 {
     color: darkorange;
 }
 
-h5 {
-    display:flex;
-    flex-wrap: wrap;
-}
-
 .logo {
     height: 20px;
     margin-right: 10px;

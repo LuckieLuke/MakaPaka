@@ -44,7 +44,7 @@
             <div class="form-container">
                 <div class="first-half-form">
                     <label>Login
-                        <input id="login" type="text" name="login" pattern="[a-zA-Z]{4,}"
+                        <input id="login" type="text" name="login" pattern="[a-zA-Za-zA-ZąćęłóżźńśŚĄĆĘŁÓŻŹŃ]{4,}"
                             title="Tylko litery i minimum 4 znaki!" required />
                     </label>
 
@@ -61,34 +61,34 @@
                     </label>
 
                     <label>Imię
-                        <input id="name" type="text" name="name" pattern="[a-zA-Z]+"
-                            title="Tylko litery (bez polskich znaków)!" required />
+                        <input id="name" type="text" name="name" pattern="[a-zA-ZąćęłóżźńśŚĄĆĘŁÓŻŹŃ]+"
+                            title="Tylko litery!" required />
                     </label>
 
                     <label>Nazwisko
-                        <input id="surname" type="text" name="surname" pattern="[a-zA-Z]+"
-                            title="Tylko litery (bez polskich znaków)!" required />
+                        <input id="surname" type="text" name="surname" pattern="[a-zA-Za-zA-ZąćęłóżźńśŚĄĆĘŁÓŻŹŃ]+"
+                            title="Tylko litery!" required />
                     </label>
                 </div>
 
                 <div class="second-half-form">
                     <label>Data urodzenia
-                        <input id="birthdate" type="text" name="birthdate" required />
+                        <input id="birthdate" type="date" name="birthdate" required />
                     </label>
 
                     <label>Miasto
-                        <input id="city" type="text" name="city" pattern="[a-zA-Z]+"
-                            title="Tylko litery (bez polskich znaków)!" required />
+                        <input id="city" type="text" name="city" pattern="[a-zA-Za-zA-ZąćęłóżźńśŚĄĆĘŁÓŻŹŃ]+"
+                            title="Tylko litery!" required />
                     </label>
 
                     <label>Ulica
-                        <input id="street" type="text" name="street" pattern="[a-zA-Z]+"
-                            title="Tylko litery (bez polskich znaków)!" required />
+                        <input id="street" type="text" name="street" pattern="[a-zA-Za-zA-ZąćęłóżźńśŚĄĆĘŁÓŻŹŃ]+"
+                            title="Tylko litery!" required />
                     </label>
 
                     <label>Numer domu
-                        <input id="number" type="text" name="number" pattern="[0-9]+" title="Dopuszczalne są liczby i /"
-                            required />
+                        <input id="number" type="text" name="number" pattern="[0-9a-zA-Z]+"
+                            title="Dopuszczalne są liczby i /" required />
                     </label>
 
                     <label>Kod pocztowy
@@ -97,8 +97,8 @@
                     </label>
 
                     <label>Kraj
-                        <input id="country" type="text" name="country" pattern="[a-zA-Z]+"
-                            title="Tylko litery (bez polskich znaków)!" required />
+                        <input id="country" type="text" name="country" pattern="[a-zA-Za-zA-ZąćęłóżźńśŚĄĆĘŁÓŻŹŃ]+"
+                            title="Tylko litery!" required />
                     </label>
 
                 </div>

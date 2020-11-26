@@ -1,5 +1,5 @@
 from flask import Flask, render_template, make_response, request
-from flask import url_for, redirect
+from flask import url_for, redirect, session
 import redis
 import hashlib
 import logging
@@ -8,10 +8,14 @@ import string
 import os
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 from jwt import encode
-import datetime
+from datetime import timedelta, datetime
 
 
 app = Flask(__name__, static_url_path='')
+app.secret_key = b'weknni34fcc#x39cb20xcme/d3983dn-'
+app.permanent_session_lifetime = timedelta(minutes=5)
+app.session_cookie_secure = True
+
 db = redis.Redis(host='makapakaapp_redis-db_1',
                  port=6379, decode_responses=True)
 log = app.logger
@@ -27,30 +31,20 @@ def setup():
 
 @app.route('/', methods=['GET'])
 def home():
-    session_id = request.cookies.get('session-id')
-    uname = request.cookies.get('uname')
-    user = None
-    if uname is not None:
-        user = db.hget(uname, 'login')
+    if 'username' in session:
+        user = db.hget(session['username'], 'login')
 
-    if session_id is not None:
         response = make_response(render_template(
             'index.html', is_logged=True, user=user))
-        exp = datetime.datetime.utcnow() + datetime.timedelta(seconds=ACCESS_EXPIRATION_TIME)
+        exp = datetime.now() + timedelta(seconds=ACCESS_EXPIRATION_TIME)
         secret = ''.join(random.choice(
             string.ascii_lowercase + string.digits) for _ in range(32))
         access_token = encode(
-            {'uname': uname, 'exp': exp,
+            {'uname': session['username'], 'exp': exp,
                 'secret': secret}, JWT_SECRET, 'HS256'
         )
         response.set_cookie(
             'access', access_token, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
-        )
-        response.set_cookie(
-            'session-id', session_id, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
-        )
-        response.set_cookie(
-            'uname', uname, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
         )
         return response
 
@@ -91,7 +85,7 @@ def createUser():
     country = request.form['country']
     file_code = ''.join(random.choice(
         string.ascii_lowercase + string.digits) for _ in range(32))
-    data = {'session_id': hash_login, 'login': login, 'password': hash_pass, 'files': file_code,
+    data = {'login': login, 'password': hash_pass, 'files': file_code,
             'pesel': pesel, 'name': name, 'surname': surname,
             'birthdate': birthdate, 'city': city, 'street': street,
             'number': number, 'postcode': postcode, 'country': country}
@@ -102,7 +96,7 @@ def createUser():
 
 @ app.route('/login')
 def login():
-    return render_template('login.html')
+    return render_template('login.html', valid=True)
 
 
 @ app.route('/auth', methods=['POST'])
@@ -116,18 +110,10 @@ def authorize():
         hashed_pass = hashlib.sha512(password).hexdigest()
         correct_password = db.hget(hashed_login, 'password')
         if hashed_pass == correct_password:
-            session_id = ''.join(random.choice(
-                string.ascii_lowercase + string.digits) for _ in range(128))
-            db.hset(hashed_login, 'session_id', session_id)
+            session['username'] = hashed_login
+            session.permanent = True
             response = make_response(redirect(url_for('home')))
-            response.set_cookie(
-                'session-id', session_id, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
-            )
-            response.set_cookie(
-                'uname', hashed_login, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
-            )
-
-            exp = datetime.datetime.utcnow() + datetime.timedelta(seconds=ACCESS_EXPIRATION_TIME)
+            exp = datetime.now() + timedelta(seconds=ACCESS_EXPIRATION_TIME)
             secret = ''.join(random.choice(
                 string.ascii_lowercase + string.digits) for _ in range(32))
             access_token = encode(
@@ -137,31 +123,25 @@ def authorize():
             response.set_cookie(
                 'access', access_token, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
             )
+            now = str(datetime.now() + timedelta(hours=1))[:-7]
+            db.hset(hashed_login, 'last_login', now)
+
             return response
 
-    return render_template('login.html')
+    return render_template('login.html', valid=False)
 
 
 @ app.route('/logout', methods=['GET', 'POST'])
 def logout():
     response = make_response(redirect(url_for('home')))
-    response.set_cookie('session-id', '', max_age=0,
-                        secure=True, httponly=True)
-    response.set_cookie('uname', '', max_age=0,
-                        secure=True, httponly=True)
+    session.clear()
     response.set_cookie('access', '', max_age=0, secure=True, httponly=True)
     return response
 
 
-@ app.route('/getuser/<username>')
-def getUser(username):
-    return db.hgetall(username)
-
-
-@app.route('/listusers')
-def listusers():
-    users = db.lrange('users', 0, -1)
-    return '\n'.join(users)
+@app.errorhandler(400)
+def bad_request(error):
+    return render_template("errors/400.html", error=error)
 
 
 @app.errorhandler(401)
@@ -177,6 +157,11 @@ def forbidden(error):
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template("errors/404.html", error=error)
+
+
+@app.errorhandler(500)
+def server_error(error):
+    return render_template("errors/500.html", error=error)
 
 
 if __name__ == '__main__':

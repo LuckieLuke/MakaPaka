@@ -139,39 +139,6 @@ function isProperLogin() {
     return login.length > 4 && /^[a-zA-Z]+$/.test(login);
 }
 
-function isProperPesel() {
-    var pesel = peselField.value.trim();
-
-    if (pesel.length != 11 || !(/^[0-9]+$/.test(pesel))) {
-        return false;
-    }
-
-    var month = +pesel.substring(2, 4);
-    var day = +pesel.substring(4, 6);
-
-    if (day < 1 || day > 31) {
-        return false;
-    }
-
-    if (!((month >= 1 && month <= 12) || (month >= 21 && month <= 32) || (month >= 41 && month <= 52) ||
-        (month >= 61 && month <= 72) || (month >= 81 && month <= 92))) {
-        return false;
-    }
-
-    var numbers = new Array();
-    for (let pos of pesel) {
-        numbers.push(+pos);
-    }
-
-    var sum = 0;
-    sum += 9 * numbers[0] + 7 * numbers[1] + 3 * numbers[2] + numbers[3] + 9 * numbers[4] +
-        7 * numbers[5] + 3 * numbers[6] + numbers[7] + 9 * numbers[8] + 7 * numbers[9];
-
-    sum %= 10;
-
-    return sum == numbers[10];
-}
-
 function isProperPassword() {
     var password = passwordField.value;
     var condition = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%&\*])(?=.{8,})");
@@ -210,11 +177,9 @@ function isLoginAvailable() {
         if (statusCode === HTTP_STATUS.OK) {
             isLogAvailable = false;
             return false;
-
         } else if (statusCode === HTTP_STATUS.NOT_FOUND) {
             isLogAvailable = true;
-            return true
-
+            return true;
         } else {
             throw "Unknown login availability status: " + statusCode;
         }

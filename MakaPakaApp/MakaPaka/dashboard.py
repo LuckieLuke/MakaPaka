@@ -1,4 +1,4 @@
-from flask import Flask, render_template, make_response, request, abort
+from flask import Flask, render_template, make_response, request, abort, session
 from flask import url_for, redirect, jsonify, send_file, send_from_directory
 from werkzeug.utils import secure_filename
 import redis
@@ -9,7 +9,7 @@ import os
 import os.path
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 from jwt import decode, InvalidTokenError, encode
-import datetime
+from datetime import timedelta, datetime, timezone
 from flask import send_file
 from model.waybill import *
 import json
@@ -17,6 +17,9 @@ import ast
 
 
 app = Flask(__name__, static_url_path='')
+app.secret_key = b'weknni34fcc#x39cb20xcme/d3983dn-'
+app.permanent_session_lifetime = timedelta(minutes=5)
+
 db = redis.Redis(host='makapakaapp_redis-db_1',
                  port=6379, decode_responses=True)
 log = app.logger
@@ -42,7 +45,7 @@ def setup():
 def list_packages():
     token = request.cookies.get('access')
     if valid(token):
-        uname = request.cookies.get('uname')
+        uname = decode(token, JWT_SECRET).get('uname')
         files_code = db.hget(uname, FILES)
         packages_names = db.smembers(files_code)
         num = len(packages_names)
@@ -68,8 +71,8 @@ def waybill():
     if valid(token):
         response = prepare_cookies('addpackage.html')
         return response
-    else:
-        return redirect('https://localhost:8080/')
+
+    return redirect('https://localhost:8080/')
 
 
 @app.route('/addpackage', methods=['POST'])
@@ -86,30 +89,25 @@ def add_waybill():
 
 @app.route('/package/<string:name>')
 def show_file(name):
-    uname = request.cookies.get('access')
-    uname = decode(uname, JWT_SECRET).get('uname')
-    file_data = ast.literal_eval(db.hget(FILES, name[:-4] + '_data'))
+    token = request.cookies.get('access')
+    if valid(token):
+        file_data = ast.literal_eval(db.hget(FILES, name[:-4] + '_data'))
 
-    waybill = to_waybill(file_data)
-    path = FILES_PATH + name
-    log.debug(path)
+        waybill = to_waybill(file_data)
+        path = FILES_PATH + name
+        log.debug(path)
 
-    if not os.path.isfile(path):
-        waybill.generate_and_save(filename=name[:-4], path=FILES_PATH)
+        if not os.path.isfile(path):
+            waybill.generate_and_save(filename=name[:-4], path=FILES_PATH)
 
-    try:
-        return send_file(path, attachment_filename=name)
-    except Exception as e:
-        log.error(e)
+        try:
+            return send_file(path, attachment_filename=name)
+        except Exception as e:
+            log.error(e)
 
-    return redirect(url_for('list_packages'))
-
-
-@ app.route('/showdecoded')
-def showJWT():
-    access = request.cookies.get('access')
-    secret = decode(access, JWT_SECRET)
-    return secret
+        return redirect(url_for('list_packages'))
+    else:
+        abort(403)
 
 
 @ app.route('/package')
@@ -171,11 +169,13 @@ def save_waybill(waybill, form):
             photo_name = '.'.join(photo_name)
             photo.save(os.path.join(FILES_PATH, photo_name))
 
-    uname = request.cookies.get('uname')
+    token = request.cookies.get('access')
+    uname = decode(token, JWT_SECRET).get('uname')
     files = db.hget(uname, FILES)
     db.sadd(files, filename)
     db.hset(FILES, filename[:-4] + '_data', str(form.to_dict()))
-    db.hset(FILES, filename[:-4] + '_date', str(datetime.datetime.utcnow()))
+    db.hset(FILES, filename[:-4] + '_date',
+            str(datetime.now() + timedelta(hours=1)))
 
 
 def valid(token):
@@ -193,26 +193,24 @@ def prepare_cookies(template, packages=None, number=None):
     else:
         response = make_response(render_template(
             template, packages=packages, number=number))
-    session_id = request.cookies.get('session-id')
-    uname = request.cookies.get('uname')
-    exp = datetime.datetime.utcnow() + datetime.timedelta(seconds=ACCESS_EXPIRATION_TIME)
-    secret = ''.join(random.choice(
-        string.ascii_lowercase + string.digits) for _ in range(32))
-    access_token = encode(
-        {'uname': uname, 'exp': exp,
-         'secret': secret}, JWT_SECRET, 'HS256'
-    )
-
-    response.set_cookie(
-        'session-id', session_id, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
-    )
-    response.set_cookie(
-        'uname', uname, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
-    )
-    response.set_cookie(
-        'access', access_token, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
-    )
+        exp = datetime.now() + timedelta(seconds=ACCESS_EXPIRATION_TIME)
+        token = request.cookies.get('access')
+        uname = decode(token, JWT_SECRET).get('uname')
+        secret = ''.join(random.choice(
+            string.ascii_lowercase + string.digits) for _ in range(32))
+        access_token = encode(
+            {'uname': uname, 'exp': exp,
+                'secret': secret}, JWT_SECRET, 'HS256'
+        )
+        response.set_cookie(
+            'access', access_token, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
+        )
     return response
+
+
+@app.errorhandler(400)
+def bad_request(error):
+    return render_template("errors/400.html", error=error)
 
 
 @app.errorhandler(401)
@@ -228,6 +226,11 @@ def forbidden(error):
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template("errors/404.html", error=error)
+
+
+@app.errorhandler(500)
+def server_error(error):
+    return render_template("errors/500.html", error=error)
 
 
 if __name__ == '__main__':

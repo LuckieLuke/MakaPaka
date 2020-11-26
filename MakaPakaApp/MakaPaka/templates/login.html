@@ -50,6 +50,10 @@
                             <label for="password" class="form-label">Hasło</label>
                         </div>
 
+                        {% if not valid %}
+                        <label>Niepoprawny login lub hasło!</label>
+                        {% endif %}
+
                         <a href="https://localhost:8080/register">Nie mam konta!</a>
 
                     </div>
