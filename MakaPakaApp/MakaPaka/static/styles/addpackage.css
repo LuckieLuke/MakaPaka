@@ -26,6 +26,14 @@ body {
     align-items: center;
 }
 
+.whole-form-inside {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
 .form-part {
     display: flex;
     flex-direction: column;
@@ -36,14 +44,6 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
     border-radius: 5px;
     width: 33%;
-}
-
-.whole-form-inside {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
 }
 
 .form-inputs {

@@ -45,7 +45,7 @@ registrationForm.addEventListener("submit", function (event) {
         console.log(event.srcElement[i].value);
     }
 
-    if (isLogAvailable && isProperSecondPassword() && isProperPesel() && isProperPassword()) {
+    if (isLogAvailable && isProperSecondPassword() && isProperPassword()) {
         submitRegisterForm();
     } else {
         console.log("Nie rejestruję, bo pola nie są poprawne!");
