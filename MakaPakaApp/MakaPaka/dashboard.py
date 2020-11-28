@@ -22,6 +22,7 @@ db = redis.Redis(host='makapakaapp_redis-db_1',
                  port=6379, decode_responses=True)
 log = app.logger
 ACCESS_EXPIRATION_TIME = 60*5
+SESSION_EXPIRATION_TIME = 60*5
 
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = ACCESS_EXPIRATION_TIME
@@ -51,6 +52,23 @@ def show_file(name):
         path = FILES_PATH + name
         log.debug(path)
 
+        uname = session['username']
+        result = db.expire('session_' + uname, SESSION_EXPIRATION_TIME)
+
+        exp = datetime.now() + timedelta(seconds=ACCESS_EXPIRATION_TIME)
+        secret = ''.join(random.choice(
+            string.ascii_lowercase + string.digits) for _ in range(32))
+        access_token = encode(
+            {'uname': session['username'], 'exp': exp,
+                'secret': secret}, JWT_SECRET, 'HS256'
+        )
+        response = make_response(redirect('https://localhost:8080/'))
+        response.set_cookie(
+            'access', access_token, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
+        )
+        if result == 0:
+            db.srem('sessions', 'session_' + uname)
+
         if not os.path.isfile(path):
             waybill.generate_and_save(filename=name[:-4], path=FILES_PATH)
 
@@ -59,7 +77,7 @@ def show_file(name):
         except Exception as e:
             log.error(e)
 
-        return redirect('https://localhost:8080/')
+        return response
     else:
         abort(403)
 

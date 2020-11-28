@@ -22,6 +22,7 @@ db = redis.Redis(host='makapakaapp_redis-db_1',
                  port=6379, decode_responses=True)
 log = app.logger
 ACCESS_EXPIRATION_TIME = 60*5
+SESSION_EXPIRATION_TIME = 60*5
 
 jwt = JWTManager(app)
 JWT_SECRET = os.getenv('JWT_SECRET')
@@ -53,7 +54,16 @@ def home():
         response.set_cookie(
             'access', access_token, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
         )
+
+        uname = session['username']
+        result = db.expire('session_' + uname, SESSION_EXPIRATION_TIME)
+        if result == 0:
+            db.srem('sessions', 'session_' + uname)
         return response
+
+    for session_id in db.smembers('sessions'):
+        if db.get(session_id) is None:
+            db.srem('sessions', session_id)
 
     return render_template('index.html', is_logged=False, user=None)
 
@@ -136,6 +146,11 @@ def authorize():
             response.set_cookie(
                 'access', access_token, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
             )
+
+            db.sadd('sessions', 'session_' + hashed_login)
+            db.set('session_' + hashed_login, 'active')
+            db.expire('session_' + hashed_login, SESSION_EXPIRATION_TIME)
+
             now = str(datetime.now() + timedelta(hours=1))[:-7]
             db.hset(hashed_login, 'last_login', now)
 
@@ -146,10 +161,17 @@ def authorize():
 
 @ app.route('/logout', methods=['GET', 'POST'])
 def logout():
-    response = make_response(redirect(url_for('home')))
-    session.clear()
-    response.set_cookie('access', '', max_age=0, secure=True, httponly=True)
-    return response
+    if 'username' in session:
+        response = make_response(redirect(url_for('home')))
+        uname = session['username']
+        db.srem('sessions', 'session_' + uname)
+
+        session.clear()
+        response.set_cookie('access', '', max_age=0,
+                            secure=True, httponly=True)
+        return response
+    else:
+        redirect(url_for('home'))
 
 
 @app.route('/packages')
@@ -167,7 +189,8 @@ def list_packages():
 
         if len(packages) > 0:
             response = prepare_cookies(
-                'packages.html', packages=packages, number=num)
+                'packages.html', packages=packages, number=num
+            )
         else:
             response = prepare_cookies('packages.html')
         return response
@@ -293,6 +316,14 @@ def prepare_cookies(template, packages=None, number=None):
             response.set_cookie(
                 'access', access_token, max_age=ACCESS_EXPIRATION_TIME, secure=True, httponly=True
             )
+
+            result = db.expire('session_' + uname, SESSION_EXPIRATION_TIME)
+            if result == 0:
+                db.srem('sessions', 'session_' + uname)
+
+            for session_id in db.smembers('sessions'):
+                if db.get(session_id) is None:
+                    db.srem('sessions', session_id)
     return response
 
 
