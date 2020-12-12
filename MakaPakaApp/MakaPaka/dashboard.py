@@ -69,6 +69,9 @@ def show_file(name):
         if result == 0:
             db.srem('sessions', 'session_' + uname)
 
+        if not os.path.exists(FILES_PATH):
+            os.mkdir(FILES_PATH)
+
         if not os.path.isfile(path):
             waybill.generate_and_save(filename=name[:-4], path=FILES_PATH)
 
@@ -137,27 +140,27 @@ def valid(token):
     return True
 
 
-@app.errorhandler(400)
+@ app.errorhandler(400)
 def bad_request(error):
     return render_template("errors/400.html", error=error)
 
 
-@app.errorhandler(401)
+@ app.errorhandler(401)
 def page_unauthorized(error):
     return render_template("errors/401.html", error=error)
 
 
-@app.errorhandler(403)
+@ app.errorhandler(403)
 def forbidden(error):
     return render_template("errors/403.html", error=error)
 
 
-@app.errorhandler(404)
+@ app.errorhandler(404)
 def page_not_found(error):
     return render_template("errors/404.html", error=error)
 
 
-@app.errorhandler(500)
+@ app.errorhandler(500)
 def server_error(error):
     return render_template("errors/500.html", error=error)
 
