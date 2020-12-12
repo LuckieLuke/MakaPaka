@@ -9,14 +9,46 @@ services:
     environment:
       FLASK_ENV: development
       JWT_SECRET: $JWT_SECRET
+      SESSION_SECRET_KEY: $SESSION_SECRET_KEY
   web-files:
     build:
       context: .
       dockerfile: ./Docker/dashboard/Dockerfile
     ports: ["8081:8881"]
-    volumes: [./MakaPaka:/MakaPaka]
+    volumes: [./MakaPaka:/MakaPakaFiles]
     environment:
       FLASK_ENV: development
       JWT_SECRET: $JWT_SECRET
+      SESSION_SECRET_KEY: $SESSION_SECRET_KEY
+  web-login:
+    build:
+      context: .
+      dockerfile: ./Docker/login/Dockerfile
+    ports: ["8082:8882"]
+    volumes: [./MakaPaka:/MakaPakaLogin]
+    environment:
+      FLASK_ENV: development
+      JWT_SECRET: $JWT_SECRET
+      SESSION_SECRET_KEY: $SESSION_SECRET_KEY
+  web-courier:
+    build:
+      context: .
+      dockerfile: ./Docker/courier/Dockerfile
+    ports: ["8085:8885"]
+    volumes: [./MakaPakaCourier:/MakaPakaCourier]
+    environment:
+      FLASK_ENV: development
+      JWT_SECRET: $JWT_SECRET
+      SESSION_SECRET_KEY: $SESSION_SECRET_KEY
+  web-locker:
+    build:
+      context: .
+      dockerfile: ./Docker/locker/Dockerfile
+    ports: ["8087:8887"]
+    volumes: [./MakaPakaLockers:/MakaPakaLockers]
+    environment:
+      FLASK_ENV: development
+      JWT_SECRET: $JWT_SECRET
+      SESSION_SECRET_KEY: $SESSION_SECRET_KEY
   redis-db:
     image: "redis:alpine"

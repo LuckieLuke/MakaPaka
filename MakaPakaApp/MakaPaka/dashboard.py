@@ -15,17 +15,18 @@ import ast
 
 
 app = Flask(__name__, static_url_path='')
-app.secret_key = b'weknni34fcc#x39cb20xcme/d3983dn-'
-app.permanent_session_lifetime = timedelta(minutes=5)
+app.permanent_session_lifetime = timedelta(minutes=600)
 
 db = redis.Redis(host='makapakaapp_redis-db_1',
                  port=6379, decode_responses=True)
 log = app.logger
-ACCESS_EXPIRATION_TIME = 60*5
-SESSION_EXPIRATION_TIME = 60*5
+ACCESS_EXPIRATION_TIME = 60*600
+SESSION_EXPIRATION_TIME = 60*600
 
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = ACCESS_EXPIRATION_TIME
+app.secret_key = os.environ.get('SESSION_SECRET_KEY')
+
 
 FILES = 'files'
 FILES_PATH = 'files/'
@@ -50,7 +51,6 @@ def show_file(name):
 
         waybill = to_waybill(file_data)
         path = FILES_PATH + name
-        log.debug(path)
 
         uname = session['username']
         result = db.expire('session_' + uname, SESSION_EXPIRATION_TIME)

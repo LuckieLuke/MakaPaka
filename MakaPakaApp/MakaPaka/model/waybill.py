@@ -12,7 +12,7 @@ class Waybill:
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", size=10)
-        self.__add_table_to_pdf(pdf)
+        self.__add_table_to_pdf(pdf, filename)
 
         filename = self.generate_filename(path, filename=filename)
 
@@ -25,7 +25,7 @@ class Waybill:
 
         return filename
 
-    def __add_table_to_pdf(self, pdf):
+    def __add_table_to_pdf(self, pdf, filename):
         n_cols = 2
         col_width = (pdf.w - pdf.l_margin - pdf.r_margin) / n_cols / 2
         font_size = pdf.font_size
@@ -38,6 +38,7 @@ class Waybill:
         pdf.cell(col_width, n_lines * font_size, "Recipient", border=1)
         pdf.multi_cell(col_width, font_size,
                        txt=self.__recipient.str_full(), border=1)
+        pdf.write(5, filename)
 
     def generate_filename(self, path, filename=None):
         if filename is None:

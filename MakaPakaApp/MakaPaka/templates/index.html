@@ -20,26 +20,26 @@
     <section class="description">
         <nav class="navbar-transparent">
             <div class="navbar-logo">
-                <a href="/">
+                <a href="https://localhost:8080/">
                     <img src="images/makapaka.png" alt="logo" /> MakaPaka </a>
             </div>
             <div class="navbar-location">
-                <a href="/">
+                <a href="https://localhost:8080/">
                     Strona główna
                 </a>
                 {% if not is_logged %}
-                <a href="/register">
+                <a href="https://localhost:8080/register">
                     Zarejestruj
                 </a>
 
-                <a href="/login">
+                <a href="https://localhost:8082/login">
                     Zaloguj
                 </a>
                 {% else %}
-                <a href="/packages">
+                <a href="https://localhost:8080/packages?fromIndex=0&toIndex=3">
                     Paczki
                 </a>
-                <a href="/logout">
+                <a href="https://localhost:8080/logout">
                     Wyloguj
                 </a>
                 {% endif %}

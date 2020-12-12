@@ -1,9 +1,9 @@
 FROM python:3.7-alpine
-WORKDIR /MakaPakaFiles
+WORKDIR /MakaPakaLogin
 
-ENV FLASK_APP dashboard.py
+ENV FLASK_APP login.py
 ENV FLASK_RUN_HOST 0.0.0.0
-ENV FLASK_RUN_PORT 8881
+ENV FLASK_RUN_PORT 8882
 
 COPY ./MakaPaka .
 

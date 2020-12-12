@@ -81,3 +81,10 @@ body {
 .centered-col {
     text-align: center;
 }
+
+.files-buttons {
+    width: 30%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}

@@ -136,7 +136,7 @@ function prepareAllFieldsValidators() {
 
 function isProperLogin() {
     var login = loginField.value.trim();
-    return login.length > 4 && /^[a-zA-Z]+$/.test(login);
+    return login.length >= 4 && /^[a-zA-Z]+$/.test(login);
 }
 
 function isProperPassword() {
