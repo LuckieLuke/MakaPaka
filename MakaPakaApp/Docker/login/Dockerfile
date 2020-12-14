@@ -4,6 +4,7 @@ WORKDIR /MakaPakaLogin
 ENV FLASK_APP login.py
 ENV FLASK_RUN_HOST 0.0.0.0
 ENV FLASK_RUN_PORT 8882
+ENV FLASK_ENV development
 
 COPY ./MakaPaka .
 

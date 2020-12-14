@@ -1,0 +1,73 @@
+body, html, main {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: 'Lobster', cursive;
+    font-size: 70px;
+    background-color: #B0A8B9;
+}
+
+.containers {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    border: 0;
+}
+
+.redirects1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #B0A8B9;
+    transition: 1s;
+    color: #494949;
+    text-decoration: none;
+}
+
+.redirects1:hover {
+    background-color: #4B4453;
+    transition: 1s;
+    color: #E5E5E5;
+}
+
+a, a:hover {
+    text-decoration: none;
+}
+
+.redirects2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #B0A8B9;
+    transition: 1s;
+    color: #494949;
+}
+
+.redirects2:hover {
+    background-color: #4B4453;
+    transition: 1s;
+    color: #E5E5E5;
+}
+
+@media (max-width: 600px) {
+    .containers {
+        flex-direction: column;
+    }
+
+    .redirects1, .redirects2 {
+        height: 50%;
+        width: 100%;
+    }
+}
+
+@media (min-width: 600px) {
+    .redirects1, .redirects2 {
+        height: 100%;
+        width: 50%;
+    }
+}
+

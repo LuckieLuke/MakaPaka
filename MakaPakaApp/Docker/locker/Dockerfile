@@ -1,9 +1,10 @@
 FROM python:3.7-alpine
-WORKDIR /MakaPakaLocker
+WORKDIR /MakaPakaLockers
 
 ENV FLASK_APP lockers.py
 ENV FLASK_RUN_HOST 0.0.0.0
 ENV FLASK_RUN_PORT 8887
+ENV FLASK_ENV development
 
 COPY ./MakaPakaLockers .
 

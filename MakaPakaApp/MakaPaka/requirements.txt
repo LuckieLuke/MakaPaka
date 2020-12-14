@@ -5,3 +5,5 @@ flask-jwt-extended
 gunicorn
 pyjwt
 fpdf
+flask-cors
+flask-swagger

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, make_response, request
-from flask import url_for, redirect, session, abort
+from flask import url_for, redirect, session, abort, jsonify
 import redis
 import hashlib
 import logging
@@ -12,7 +12,7 @@ from datetime import timedelta, datetime
 from model.waybill import *
 from werkzeug.utils import secure_filename
 import json
-
+import uuid
 
 app = Flask(__name__, static_url_path='')
 
@@ -36,6 +36,15 @@ FILENAMES = 'filenames'
 
 def setup():
     log.setLevel(logging.DEBUG)
+
+
+# @app.after_request
+# def add_headers(response):
+#     log.debug('AFTER REG REQUEST')
+#     response.headers["Access-Control-Allow-Origin"] = '*'
+#     response.headers["Access-Control-Allow-Headers"] = '*'
+#     response.headers["Access-Control-Allow-Methods"] = '*'
+#     return response
 
 
 @app.route('/', methods=['GET'])
@@ -86,6 +95,25 @@ def checkAvailability(username):
         return make_response('go on', 404)
     else:
         return make_response('wait', 200)
+
+
+@app.route("/package/delete/<string:name>", methods=["DELETE"])
+def delete(name):
+    if 'username' in session:
+        for field in ('_data', '_date', '_status'):
+            db.hdel(FILES, name[:-4] + field)
+
+        files = db.hget(session['username'], FILES)
+        db.lrem(files, 0, name)
+
+        if os.path.exists(FILES_PATH + name):
+            os.remove(FILES_PATH + name)
+        if os.path.exists(FILES_PATH + name[:-4] + '.png'):
+            os.remove(FILES_PATH + name[:-4] + '.png')
+        if os.path.exists(FILES_PATH + name[:-4] + '.jpeg'):
+            os.remove(FILES_PATH + name[:-4] + '.jpeg')
+
+    return redirect(url_for("getPackagesFromTo", fromIndex=0, toIndex=3))
 
 
 @ app.route('/create', methods=['POST'])
@@ -169,7 +197,10 @@ def getPackagesFromTo():
         for f in files:
             shortname = f[:-4]
             date = (db.hget('files', shortname + '_date'))[:-7]
-            full_files_data[f] = (f, date)
+            status = db.hget('files', shortname + '_status')
+            if not status:
+                status = 'nowa'
+            full_files_data[f] = (f, date, status)
 
         url = 'https://localhost:8080/packages?'
         prevParams = 'fromIndex=' + str(int(fromIndex) - 4) + \
@@ -279,7 +310,6 @@ def valid(token):
     try:
         decode(token, JWT_SECRET)
     except InvalidTokenError as e:
-        app.logger.error(str(e))
         return False
     return True
 
@@ -341,6 +371,35 @@ def getInfo():
     access_token = request.cookies.get('access')
     info = decode(access_token, JWT_SECRET)
     return info
+
+
+@app.route('/generate')
+def generate():
+    couriers = db.lrange('couriers', 0, -1)
+    if len(couriers) == 0:
+        for i in range(5):
+            name = 'kurier' + str(i)
+            hashed = hashlib.sha512(name.encode('utf-8')).hexdigest()
+
+            data = {}
+            data['username'] = hashed
+            data['password'] = hashed
+            data['packages'] = uuid.uuid4().hex
+            db.lpush('couriers', hashed)
+            db.hmset(hashed, data)
+
+    lockers = db.lrange('lockers', 0, -1)
+    if len(lockers) == 0:
+        for i in range(5):
+            idf = 'locker' + str(i)
+
+            data = {}
+            data['packages'] = uuid.uuid4().hex
+            data['tokens'] = uuid.uuid4().hex
+            db.lpush('lockers', idf)
+            db.hmset(idf, data)
+
+    return redirect('https://localhost:8080/')
 
 
 if __name__ == '__main__':

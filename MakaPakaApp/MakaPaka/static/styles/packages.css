@@ -88,3 +88,16 @@ body {
     flex-direction: row;
     justify-content: space-evenly;
 }
+
+h5 {
+    margin-top: 10px;
+}
+
+.buttons-col {
+    display: flex;
+    flex-direction: row;
+}
+
+td .action-buttons {
+    margin: 0 2px;
+}

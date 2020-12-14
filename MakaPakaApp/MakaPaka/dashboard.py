@@ -12,9 +12,11 @@ from jwt import decode, InvalidTokenError, encode
 from datetime import timedelta, datetime, timezone
 from model.waybill import *
 import ast
+from flask_cors import CORS, cross_origin
 
 
 app = Flask(__name__, static_url_path='')
+cors = CORS(app)
 app.permanent_session_lifetime = timedelta(minutes=600)
 
 db = redis.Redis(host='makapakaapp_redis-db_1',
@@ -70,7 +72,7 @@ def show_file(name):
             db.srem('sessions', 'session_' + uname)
 
         if not os.path.exists(FILES_PATH):
-            os.mkdir(FILES_PATH)
+            os.mkdir(FILES_PATH, 0o777)
 
         if not os.path.isfile(path):
             waybill.generate_and_save(filename=name[:-4], path=FILES_PATH)

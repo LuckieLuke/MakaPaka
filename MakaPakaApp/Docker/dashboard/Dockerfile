@@ -4,6 +4,7 @@ WORKDIR /MakaPakaFiles
 ENV FLASK_APP dashboard.py
 ENV FLASK_RUN_HOST 0.0.0.0
 ENV FLASK_RUN_PORT 8881
+ENV FLASK_ENV development
 
 COPY ./MakaPaka .
 
