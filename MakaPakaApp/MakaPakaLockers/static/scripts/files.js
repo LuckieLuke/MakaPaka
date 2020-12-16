@@ -1,5 +1,33 @@
 var prevURL = '';
 var nextURL = '';
+const saveButton = document.getElementById("save");
+
+saveButton.addEventListener("click", function () {
+    var packages = []
+    var archive = allStorage()
+    for (let package in archive) {
+        if (archive[package] === 'true') {
+            packages.push(package)
+        }
+    }
+
+    var courierUrl = 'https://localhost:8087/POST/takepackages'
+
+    var actionParams = {
+        method: 'POST',
+        body: JSON.stringify(packages),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    }
+
+    fetch(courierUrl, actionParams)
+        .then(resp => resp.json())
+        .catch(err => console.log(err))
+
+    window.location.href = 'https://localhost:8087/'
+
+})
 
 function allStorage() {
     var archive = {},
@@ -28,7 +56,7 @@ function getData() {
             for (let package of data) {
                 packages.innerHTML += `
                 <div class="choice">
-                    <label class="label-group">${package}
+                    <label class="label-group">${package.length > 15 ? package.slice(0, 15) + '...' : package}
                         <input type="checkbox" id="${package}" class="files" name="${package}" ${localStorage.getItem(package) === 'true' ? "checked" : null}/>
                         <span class="checkmark"></span>
                     </label>
@@ -44,7 +72,6 @@ function getData() {
                     } else {
                         localStorage.removeItem(checkbox.id)
                     }
-                    console.log(allStorage())
                 })
             }
         })

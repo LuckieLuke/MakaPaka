@@ -18,9 +18,15 @@ jwt = JWTManager(app)
 JWT_SECRET = os.getenv('JWT_SECRET')
 
 
+def setup():
+    log.setLevel(logging.DEBUG)
+
+
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('index.html')
+    resp = make_response(render_template('index.html'))
+    resp.set_cookie('courier_access', '', max_age=-1)
+    return resp
 
 
 @app.route('/send')
@@ -34,9 +40,8 @@ def senddata():
     locker = request.form['locker']
 
     if locker in db.lrange('lockers', 0, -1) and db.hget('files', package + '_status') == 'nowa':
-        db.hset('files', package + '_status', 'oczekująca')
-        packages = db.hget(locker, 'packages')
-        db.rpush(packages, package)
+        db.hset('files', package + '_status', 'oczekująca w paczkomacie')
+        db.rpush(locker, package)
     else:
         return render_template('send.html', msg='Błędne dane! Spróbuj jeszcze raz.')
 
@@ -69,7 +74,7 @@ def authorize_courier():
             string.ascii_lowercase + string.digits) for _ in range(32))
         access_token = encode(
             {'uname': courier, 'exp': exp,
-                'secret': secret}, JWT_SECRET, 'HS256'
+                'secret': secret, 'locker': locker}, JWT_SECRET, 'HS256'
         )
         response.set_cookie(
             'courier_access', access_token, max_age=600, secure=True, httponly=True
@@ -124,10 +129,31 @@ def getPackagesFromTo():
     return data
 
 
+@app.route('/POST/takepackages', methods=['POST'])
+def takepackages():
+    packages = request.json
+    token = request.cookies.get('courier_access')
+    resp = make_response(redirect(url_for('home')))
+    resp.set_cookie('courier_access', '', max_age=-1)
+
+    if not valid(token):
+        return resp
+
+    courier = decode(token, JWT_SECRET)['uname']
+    packages_code = db.hget(courier, 'packages')
+    locker = decode(token, JWT_SECRET)['locker']
+
+    for package in packages:
+        db.hset('files', package + '_status', 'odebrana z paczkomatu')
+        db.lpush(packages_code, package)
+        db.lrem(locker, 0, package)
+
+    return resp
+
+
 def valid(token):
     try:
         decode(token, JWT_SECRET)
-    except InvalidTokenError as e:
-        app.logger.error(str(e))
+    except InvalidTokenError as _:
         return False
     return True

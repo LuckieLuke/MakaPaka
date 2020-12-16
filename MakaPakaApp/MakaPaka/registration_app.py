@@ -113,7 +113,7 @@ def delete(name):
         if os.path.exists(FILES_PATH + name[:-4] + '.jpeg'):
             os.remove(FILES_PATH + name[:-4] + '.jpeg')
 
-    return redirect(url_for("getPackagesFromTo", fromIndex=0, toIndex=3))
+    return make_response(name)
 
 
 @ app.route('/create', methods=['POST'])

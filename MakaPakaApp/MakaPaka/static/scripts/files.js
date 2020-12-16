@@ -5,7 +5,7 @@ function getData() {
     fetch(`https://localhost:8080/GET/packages?fromIndex=${myParams.get('fromIndex')}&toIndex=${myParams.get('toIndex')}`, { method: "GET" })
         .then(resp => resp.json())
         .then(info => {
-            prepareButtons(info.prev, info.next, Object.keys(info.files).length)
+            prepareButtons(info.prev, info.next)
             return info.files
         })
         .then(data => {
@@ -21,7 +21,7 @@ function getData() {
         })
 }
 
-function prepareButtons(prev, next, filesNum) {
+function prepareButtons(prev, next) {
     const myParams = new URLSearchParams(window.location.search)
     const buttonsPlace = document.getElementsByClassName('files-buttons')[0]
     buttonsPlace.innerHTML = ''
@@ -42,7 +42,7 @@ function prepareButtons(prev, next, filesNum) {
         })
 }
 
-function deleteFile(name) {
+async function deleteFile(name) {
     let deleteURL = `https://localhost:8080/package/delete/${name}`
 
     let params = {
@@ -50,17 +50,21 @@ function deleteFile(name) {
         body: { "name": name }
     };
 
-    fetch(deleteURL, params)
-        .then(response => {
-            if (response.redirected) {
-                window.location.href = 'https://localhost:8080/packages?fromIndex=0&toIndex=3'
-            }
-            else { response.json() }
-        }
-        )
-        .catch(err => {
-            console.log("Caught error: " + err);
-        });
+    const response = await fetch(deleteURL, params)
+    if (response.ok) {
+        window.location.replace('https://localhost:8080/packages?fromIndex=0&toIndex=3')
+    }
+    else { response.json() }
+    // .then(response => {
+    //     if (response.redirected) {
+    //         window.location.replace('https://localhost:8080/packages?fromIndex=0&toIndex=3')
+    //     }
+    //     else { response.json() }
+    // }
+    // )
+    // .catch(err => {
+    //     console.log("Caught error: " + err);
+    // });
 }
 
 getData()
