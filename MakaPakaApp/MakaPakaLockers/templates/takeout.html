@@ -25,17 +25,20 @@
             </a>
             <div class="redirects2">
                 <h1>Odbierz</h1>
-                <form action="">
+                <form action="/auth" , method="POST">
                     <div class="form-wrapper">
-                        <label for="">ID paczkomatu</label>
-                        <input type="text" class="form-control">
+                        <label for="locker">ID paczkomatu</label>
+                        <input type="text" class="form-control" name="locker" pattern="[a-zA-Z0-9]+" required>
                     </div>
                     <div class="form-wrapper">
-                        <label for="">Kod dostępu</label>
-                        <input type="text" class="form-control">
+                        <label for="token">Kod dostępu</label>
+                        <input type="text" class="form-control" name="token" pattern="[a-zA-Z0-9]+" required>
                     </div>
                     <button>Zapisz</button>
                 </form>
+                {% if msg %}
+                <h6>{{msg}}</h6>
+                {% endif %}
             </div>
         </div>
     </main>

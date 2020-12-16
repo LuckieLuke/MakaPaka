@@ -304,6 +304,7 @@ def save_waybill(waybill, form):
     db.hset(FILES, filename[:-4] + '_data', str(form.to_dict()))
     db.hset(FILES, filename[:-4] + '_date',
             str(datetime.now() + timedelta(hours=1)))
+    db.hset(FILES, filename[:-4] + '_status', 'nowa')
 
 
 def valid(token):
@@ -378,26 +379,22 @@ def generate():
     couriers = db.lrange('couriers', 0, -1)
     if len(couriers) == 0:
         for i in range(5):
-            name = 'kurier' + str(i)
+            name = 'courier' + str(i)
             hashed = hashlib.sha512(name.encode('utf-8')).hexdigest()
 
             data = {}
-            data['username'] = hashed
+            data['username'] = name
             data['password'] = hashed
             data['packages'] = uuid.uuid4().hex
-            db.lpush('couriers', hashed)
-            db.hmset(hashed, data)
+            data['tokens'] = uuid.uuid4().hex
+            db.lpush('couriers', name)
+            db.hmset(name, data)
 
     lockers = db.lrange('lockers', 0, -1)
     if len(lockers) == 0:
         for i in range(5):
             idf = 'locker' + str(i)
-
-            data = {}
-            data['packages'] = uuid.uuid4().hex
-            data['tokens'] = uuid.uuid4().hex
             db.lpush('lockers', idf)
-            db.hmset(idf, data)
 
     return redirect('https://localhost:8080/')
 

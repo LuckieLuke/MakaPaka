@@ -16,7 +16,7 @@ function getData() {
                     + '</td><td class="centered-col">' + data[info][1]
                     + '</td><td class="centered-col">' + data[info][2]
                     + `<td class="centered-col buttons-col"><a href="https://localhost:8081/package/${info}" class="btn btn-success action-buttons">Otwórz</a>`
-                    + `<button onclick="deleteFile('${info}')" class="btn btn-danger action-buttons" ${data[info][2] !== 'nowa' ? 'hidden' : null}>Usuń</button></td></tr>`
+                    + `<button onclick="deleteFile('${info}')" class="btn btn-danger action-buttons" ${data[info][2] !== 'nowa' ? 'disabled' : null}>Usuń</button></td></tr>`
             }
         })
 }
@@ -34,7 +34,9 @@ function prepareButtons(prev, next, filesNum) {
         .then(resp => resp.json())
         .then(info => info.files)
         .then(files => {
-            if (filesNum === 4 && (+myParams.get('toIndex') + 1 < Object.keys(files).length || Object.keys(files).length % 4 !== 0)) {
+            console.log(+myParams.get('toIndex'))
+            console.log(Object.keys(files).length)
+            if (+myParams.get('toIndex') < Object.keys(files).length - 1) {
                 buttonsPlace.innerHTML += `<a href="${next}"><button class="btn btn-primary">Następne</button></a>`
             }
         })
