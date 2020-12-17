@@ -7,6 +7,11 @@ body {
     padding-bottom: 3%; /* it must be the same size as footer height */
     background-color: #2e2e2e;
     color: whitesmoke;
+    background-image: url("../images/courier.jpeg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100%;
+    background-position: center;
 }
 
 h2 {
@@ -121,9 +126,7 @@ h3+h4, h4+h5 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-image: url("../images/courier.jpeg");
-    background-size: cover;
-    background-repeat: no-repeat;
+
     color:whitesmoke;
 }
 

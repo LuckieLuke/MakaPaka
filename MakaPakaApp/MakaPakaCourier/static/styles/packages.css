@@ -1,0 +1,173 @@
+body, html, main {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    font-size: 20px;
+    background-color: #444655;
+    color: #E5E5E5;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.containers {
+    margin: 0;
+    padding: 0;
+    width: 30%;
+    min-width: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    border: 0;
+}
+
+.choice {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+p {
+    margin: 0;
+    font-size: 30px;
+}
+
+h1 {
+    font-family: 'Lobster', cursive;
+    color: #A9AABC;
+    font-size: 60px;
+    margin-bottom: 2%;
+    text-align: center;
+}
+
+h3 {
+    font-family: 'Lobster', cursive;
+    color: #A9AABC;
+    text-align: center;
+}
+
+label {
+    padding: 0;
+    margin: 0;
+}
+
+.label-group {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 25px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.label-group input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.label-group input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.label-group .checkmark:after {
+    left: 10px;
+    top: 7px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.buttons {
+    margin-top: 1%;
+    width: 25%;
+    min-width: 300px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+}
+
+button:disabled {
+    background-color: rgb(142, 136, 151);
+    cursor: default;
+}
+
+button:focus {
+    outline: 0;
+}
+
+button {
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    width: 152px;
+    height: 40px;
+    margin: auto;
+    margin-top: 23px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: rgb(100, 93, 109);
+    font-size: 13px;
+    color: #fff;
+    text-transform: uppercase;
+    border-radius: 20px;
+    overflow: hidden;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    position: relative;
+    -webkit-transition-property: color;
+    transition-property: color;
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s; 
+}
+    
+button:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgb(142, 136, 151);
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    -webkit-transform-origin: 0 50%;
+    transform-origin: 0 50%;
+    -webkit-transition-property: transform;
+    transition-property: transform;
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out; 
+}
+
+button:hover:before {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+    -webkit-transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
+    transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66); 
+}
+

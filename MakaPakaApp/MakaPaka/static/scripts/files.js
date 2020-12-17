@@ -55,16 +55,6 @@ async function deleteFile(name) {
         window.location.replace('https://localhost:8080/packages?fromIndex=0&toIndex=3')
     }
     else { response.json() }
-    // .then(response => {
-    //     if (response.redirected) {
-    //         window.location.replace('https://localhost:8080/packages?fromIndex=0&toIndex=3')
-    //     }
-    //     else { response.json() }
-    // }
-    // )
-    // .catch(err => {
-    //     console.log("Caught error: " + err);
-    // });
 }
 
 getData()

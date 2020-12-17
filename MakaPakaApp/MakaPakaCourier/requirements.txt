@@ -1,3 +1,5 @@
 flask
 redis
 pyopenssl
+pyjwt
+flask-jwt-extended 

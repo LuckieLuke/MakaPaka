@@ -1,0 +1,32 @@
+{
+    "name": "MakaPaka - paczki!",
+    "short_name": "MakaPaka",
+    "description": "Quick and cheap deliveries",
+    "icons": [
+        {
+            "src": "/images/white-poop-48.png",
+            "type": "image/png",
+            "sizes": "48x48"
+        },
+        {
+            "src": "/images/white-poop-90.png",
+            "type": "image/png",
+            "sizes": "90x90"
+        },
+        {
+            "src": "/images/white-poop-256.png",
+            "type": "image/png",
+            "sizes": "256x256"
+        },
+        {
+            "src": "/images/white-poop-512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "theme_color": "#444655",
+    "background_color": "#444655",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/"
+}

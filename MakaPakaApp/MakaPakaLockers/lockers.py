@@ -63,7 +63,7 @@ def authorize_courier():
         for i in range(5):
             tokens = db.hget('courier' + str(i), 'tokens')
 
-            if token in db.lrange(tokens, 0, -1):
+            if token == db.get(tokens):
                 courier = 'courier' + str(i)
                 break
 
@@ -105,10 +105,10 @@ def show_packages():
 
 @app.route('/GET/packages', methods=['GET'])
 def getPackagesFromTo():
-    # token = request.cookies.get('courier_access')
+    token = request.cookies.get('courier_access')
 
-    # if not valid(token):
-    #     return {}
+    if not valid(token):
+        return {}
 
     data = {}
     fromIndex = request.args.get('fromIndex')

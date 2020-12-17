@@ -6,7 +6,7 @@ body, html, main {
 body {
     font-family: 'Lobster', cursive;
     font-size: 70px;
-    background-color: #B0A8B9;
+    background-color: #444655;
 }
 
 .containers {
@@ -19,39 +19,57 @@ body {
     transition: 1s;
 }
 
-.redirects1 {
+.left {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #B0A8B9;
-    transition: 1s;
-    color: #494949;
-    text-decoration: none;
-}
-
-.redirects1:hover {
-    background-color: #4B4453;
+    background-color: #444655;
     transition: 1s;
     color: #E5E5E5;
+    text-decoration: none;
+    flex-direction: column;
+}
+
+.left:hover {
+    background-color: #A9AABC;
+    transition: 1s;
+    color: #494949;
+}
+
+.right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #444655;
+    transition: 1s;
+    color: #E5E5E5;
+}
+
+.right:hover {
+    background-color: #A9AABC;
+    transition: 1s;
+    color: #494949;
+}
+
+.red-inside {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50%;
+    width: 100%;
+    transition: 1s;
+    background-color: #444655;
+    color: #E5E5E5;
+}
+
+.red-inside:hover {
+    background-color: #A9AABC;
+    transition: 1s;
+    color: #494949;
 }
 
 a, a:hover {
     text-decoration: none;
-}
-
-.redirects2 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #B0A8B9;
-    transition: 1s;
-    color: #494949;
-}
-
-.redirects2:hover {
-    background-color: #4B4453;
-    transition: 1s;
-    color: #E5E5E5;
 }
 
 @media (max-width: 600px) {
@@ -60,14 +78,24 @@ a, a:hover {
         transition: 1s;
     }
 
-    .redirects1, .redirects2 {
-        height: 50%;
+    .left {
         width: 100%;
+        height: 66%;
+    }
+
+    .red-inside {
+        width: 100%;
+        height: 50%;
+    }
+
+    .right {
+        width: 100%;
+        height: 34%;
     }
 }
 
 @media (min-width: 600px) {
-    .redirects1, .redirects2 {
+    .left, .right {
         height: 100%;
         width: 50%;
     }
