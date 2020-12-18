@@ -2,7 +2,7 @@
 <html lang="pl">
 
 <head>
-    <title>Odbiór paczki</title>
+    <title>Odbiór paczki [kurier]</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -20,7 +20,6 @@
 
     <main>
         <div class="containers">
-
             <h1>Zaloguj się</h1>
             <form action="/auth" , method="POST">
                 <div class="form-wrapper">
@@ -31,12 +30,11 @@
                     <label for="password">Hasło</label>
                     <input type="password" class="form-control" name="password" pattern="[a-zA-Z0-9]+" required>
                 </div>
-                <button>Zapisz</button>
+                <button>Zaloguj</button>
             </form>
             {% if msg %}
             <h6>{{msg}}</h6>
             {% endif %}
-
         </div>
     </main>
 

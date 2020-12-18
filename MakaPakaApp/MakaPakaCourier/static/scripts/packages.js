@@ -3,7 +3,7 @@ var nextURL = '';
 const saveButton = document.getElementById("save");
 
 saveButton.addEventListener("click", function () {
-    window.location.href = 'http://localhost:8085/options'
+    window.location.href = 'https://localhost:8085/options'
 })
 
 function allStorage() {
@@ -22,7 +22,7 @@ function getData() {
     var packages = document.getElementsByClassName("containers")[0];
     const myParams = new URLSearchParams(window.location.search)
 
-    fetch(`http://localhost:8085/GET/packages?fromIndex=${myParams.get('fromIndex')}&toIndex=${myParams.get('toIndex')}`)
+    fetch(`https://localhost:8085/GET/packages?fromIndex=${myParams.get('fromIndex')}&toIndex=${myParams.get('toIndex')}`)
         .then(resp => resp.json())
         .then(info => {
             prepareButtons(info.prev, info.next)
@@ -56,7 +56,7 @@ function prepareButtons(prev, next) {
         prevButton.removeAttribute('disabled')
     }
 
-    fetch(`http://localhost:8085/GET/packages?fromIndex=0&toIndex=-1`)
+    fetch(`https://localhost:8085/GET/packages?fromIndex=0&toIndex=-1`)
         .then(resp => resp.json())
         .then(info => info.packages)
         .then(data => {

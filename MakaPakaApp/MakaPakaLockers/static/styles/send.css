@@ -211,6 +211,9 @@ button:hover:before {
     transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66); 
 }
 
+button:focus {
+    outline: none;
+}
 
 @media (max-width: 991px) {
     .inner {

@@ -22,8 +22,8 @@ JWT_SECRET = os.getenv('JWT_SECRET')
 
 
 @app.route('/')
-def home():
-    return render_template('main.html')
+def home(msg=None):
+    return render_template('main.html', msg=msg)
 
 
 @app.route('/service-worker.js')
@@ -56,7 +56,7 @@ def take_package():
     token = request.cookies.get('courier_login')
 
     if not valid(token):
-        return redirect('http://localhost:8085/options')
+        return redirect('https://localhost:8085/')
 
     token = decode(token, JWT_SECRET)
     package = request.form['package']
@@ -69,7 +69,6 @@ def take_package():
     if db.hget('files', package + '_status') == 'nowa':
         db.rpush(packages_code, package)
         db.hset('files', package + '_status', 'przekazana kurierowi')
-        db.rpush()
         return render_template('take.html', msg='Paczka odebrana!')
     else:
         return render_template('take.html', msg='Paczka nie posiada statusu "nowa"!')
@@ -77,6 +76,10 @@ def take_package():
 
 @app.route('/code')
 def code():
+    token = request.cookies.get('courier_login')
+
+    if not valid(token):
+        return redirect(url_for('home'))
     return render_template('code.html')
 
 
@@ -104,7 +107,7 @@ def authorize():
     password = request.form['password'].encode('utf-8')
     hashed_pass = hashlib.sha512(password).hexdigest()
 
-    resp = make_response(redirect('http://localhost:8085/options'))
+    resp = make_response(redirect('https://localhost:8085/options'))
     if login in db.lrange('couriers', 0, -1):
         correct_pass = db.hget(login, 'password')
         if correct_pass == hashed_pass:
@@ -118,7 +121,9 @@ def authorize():
             resp.set_cookie(
                 'courier_login', access_token, max_age=600
             )
-    return resp
+            return resp
+        return render_template('main.html', msg='Błędne dane logowania!')
+    return render_template('main.html', msg='Błędne dane logowania!')
 
 
 @app.route('/packages')
@@ -126,7 +131,7 @@ def packages():
     token = request.cookies.get('courier_login')
 
     if not valid(token):
-        return redirect('http://localhost:8085/')
+        return redirect('https://localhost:8085/')
 
     token = decode(token, JWT_SECRET)
     packages_code = token['packages']
@@ -159,7 +164,7 @@ def packagesFromTo():
     packages = db.lrange(packages_code, fromIndex, toIndex)
     data['packages'] = packages
 
-    url = 'http://localhost:8085/packages?'
+    url = 'https://localhost:8085/packages?'
     prevParams = 'fromIndex=' + str(int(fromIndex) - 5) + \
         '&toIndex=' + str(int(toIndex) - 5)
     nextParams = 'fromIndex=' + str(int(fromIndex) + 5) + \
@@ -177,3 +182,28 @@ def valid(token):
     except InvalidTokenError as _:
         return False
     return True
+
+
+@ app.errorhandler(400)
+def bad_request(error):
+    return render_template("errors/400.html", error=error)
+
+
+@ app.errorhandler(401)
+def page_unauthorized(error):
+    return render_template("errors/401.html", error=error)
+
+
+@ app.errorhandler(403)
+def forbidden(error):
+    return render_template("errors/403.html", error=error)
+
+
+@ app.errorhandler(404)
+def page_not_found(error):
+    return render_template("errors/404.html", error=error)
+
+
+@ app.errorhandler(500)
+def server_error(error):
+    return render_template("errors/500.html", error=error)

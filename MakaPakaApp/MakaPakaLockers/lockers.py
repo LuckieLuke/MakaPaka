@@ -157,3 +157,28 @@ def valid(token):
     except InvalidTokenError as _:
         return False
     return True
+
+
+@ app.errorhandler(400)
+def bad_request(error):
+    return render_template("errors/400.html", error=error)
+
+
+@ app.errorhandler(401)
+def page_unauthorized(error):
+    return render_template("errors/401.html", error=error)
+
+
+@ app.errorhandler(403)
+def forbidden(error):
+    return render_template("errors/403.html", error=error)
+
+
+@ app.errorhandler(404)
+def page_not_found(error):
+    return render_template("errors/404.html", error=error)
+
+
+@ app.errorhandler(500)
+def server_error(error):
+    return render_template("errors/500.html", error=error)

@@ -27,11 +27,12 @@ async function generate() {
 }
 
 async function setCode() {
-    const resp = await fetch('http://localhost:8085/GET/code');
+    const resp = await fetch('https://localhost:8085/GET/code');
     const data = await resp.json();
 
     if (data.code === 'Zaloguj się!') {
-        codePlace.innerHTML = `<a href="http://localhost:8085/">${data.code}</a>`
+        codePlace.innerHTML = `<a href="https://localhost:8085/">${data.code}</a>`
+        clockPlace.innerHTML = ''
     } else {
         codePlace.innerHTML = data.code
     }
