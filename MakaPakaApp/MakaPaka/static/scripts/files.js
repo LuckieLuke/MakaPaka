@@ -43,7 +43,7 @@ function prepareButtons(prev, next) {
 }
 
 async function deleteFile(name) {
-    let deleteURL = `https://localhost:8080/package/delete/${name}`
+    let deleteURL = `https://localhost:8080/DELETE/package/${name}`
 
     let params = {
         method: 'DELETE',

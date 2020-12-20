@@ -31,7 +31,7 @@ body {
 }
 
 .left:hover {
-    background-color: #A9AABC;
+    background-color: #444655;
     transition: 1s;
     color: #494949;
 }
@@ -55,12 +55,14 @@ body {
     transition: 1s;
     background-color: #444655;
     color: #E5E5E5;
+    border-radius: 5px;
 }
 
 .red-inside:hover {
     background-color: #A9AABC;
     transition: 1s;
     color: #494949;
+    border-radius: 5px;
 }
 
 a, a:hover {
@@ -91,7 +93,7 @@ a, a:hover {
 }
 
 h6 {
-    color: brown;
+    color: #AE686D;
     font-size: 20px;
 }
 

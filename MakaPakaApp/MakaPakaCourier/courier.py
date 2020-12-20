@@ -67,7 +67,7 @@ def take_package():
     packages_code = token['packages']
 
     if db.hget('files', package + '_status') == 'nowa':
-        db.rpush(packages_code, package)
+        db.lpush(packages_code, package)
         db.hset('files', package + '_status', 'przekazana kurierowi')
         return render_template('take.html', msg='Paczka odebrana!')
     else:
@@ -119,7 +119,7 @@ def authorize():
                  'secret': secret, 'packages': db.hget(login, 'packages')}, JWT_SECRET, 'HS256'
             )
             resp.set_cookie(
-                'courier_login', access_token, max_age=600
+                'courier_login', access_token, max_age=600, secure=True, httponly=True
             )
             return resp
         return render_template('main.html', msg='Błędne dane logowania!')

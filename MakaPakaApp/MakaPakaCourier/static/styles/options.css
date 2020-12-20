@@ -30,12 +30,6 @@ body {
     flex-direction: column;
 }
 
-.left:hover {
-    background-color: #A9AABC;
-    transition: 1s;
-    color: #494949;
-}
-
 .right {
     display: flex;
     justify-content: center;
@@ -60,12 +54,14 @@ body {
     transition: 1s;
     background-color: #444655;
     color: #E5E5E5;
+    border-radius: 5px;
 }
 
 .red-inside:hover {
     background-color: #A9AABC;
     transition: 1s;
     color: #494949;
+    border-radius: 5px;
 }
 
 a, a:hover {

@@ -38,15 +38,6 @@ def setup():
     log.setLevel(logging.DEBUG)
 
 
-# @app.after_request
-# def add_headers(response):
-#     log.debug('AFTER REG REQUEST')
-#     response.headers["Access-Control-Allow-Origin"] = '*'
-#     response.headers["Access-Control-Allow-Headers"] = '*'
-#     response.headers["Access-Control-Allow-Methods"] = '*'
-#     return response
-
-
 @app.route('/', methods=['GET'])
 def home():
     if 'username' in session:
@@ -97,7 +88,7 @@ def checkAvailability(username):
         return make_response('wait', 200)
 
 
-@app.route("/package/delete/<string:name>", methods=["DELETE"])
+@app.route("/DELETE/package/<string:name>", methods=['DELETE'])
 def delete(name):
     if 'username' in session:
         for field in ('_data', '_date', '_status'):
