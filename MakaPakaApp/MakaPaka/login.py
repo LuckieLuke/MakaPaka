@@ -18,7 +18,7 @@ auth0 = oauth.register(
     'makapakaapp',
     api_base_url='https://makapaka.eu.auth0.com',
     client_id='injZ4aCCaRZqAESwn2rmuXNxqRdcHL4g',
-    client_secret='d320QTd8FVPMRdDdziRdzHAFQWtdbT6Lf4U23-e-YcS1MeCdsdV727opDd2BMEWO',
+    client_secret=os.environ.get('OAUTH_SECRET_SENDER'),
     access_token_url='https://makapaka.eu.auth0.com/oauth/token',
     authorize_url='https://makapaka.eu.auth0.com/authorize',
     client_kwargs={'scope': 'openid profile email'}

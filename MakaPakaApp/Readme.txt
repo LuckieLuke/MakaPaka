@@ -10,3 +10,6 @@ Każdy kurier dostaje login courier0, courier1, ..., courier4 i hasło, będące
 
 Jako że aplikacja kurierska jest PWA, należy ją testować, używając Google Chrome z flagami:
  --ignore-certificate-errors --unsafely-treat-insecure-origin-as-secure=https://localhost:8085 --allow-insecure-localhost https://localhost:8085
+
+!!!!!!!!!!!!!!!!!!!!!!!!! WAŻNE !!!!!!!!!!!!!!!!!!!!!!!!!!
+Aby aplikacja zaczęła korzystać z websocketów, należy wejść pod `https://localhost:8090/`

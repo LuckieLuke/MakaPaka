@@ -30,6 +30,7 @@ services:
       FLASK_ENV: development
       JWT_SECRET: $JWT_SECRET
       SESSION_SECRET_KEY: $SESSION_SECRET_KEY
+      OAUTH_SECRET_SENDER: $OAUTH_SECRET_SENDER
   web-courier:
     build:
       context: .
@@ -39,6 +40,8 @@ services:
     environment:
       FLASK_ENV: development
       JWT_SECRET: $JWT_SECRET
+      SESSION_SECRET_KEY: $SESSION_SECRET_KEY
+      OAUTH_SECRET_COURIER: $OAUTH_SECRET_COURIER
   web-locker:
     build:
       context: .

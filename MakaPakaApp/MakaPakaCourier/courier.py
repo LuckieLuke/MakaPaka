@@ -20,7 +20,7 @@ auth0 = oauth.register(
     'makapakaapp',
     api_base_url='https://makapaka.eu.auth0.com',
     client_id='I2UWn9Woc1WYFYt02oP0mlpxIpeSEkiK',
-    client_secret='s56-ibhxFRf56YQTkaJz6kupgj-wdBAPnoBNIKgv3eyYmLuoXq_FKl799mn2Vv38',
+    client_secret=os.environ.get('OAUTH_SECRET_COURIER'),
     access_token_url='https://makapaka.eu.auth0.com/oauth/token',
     authorize_url='https://makapaka.eu.auth0.com/authorize',
     client_kwargs={'scope': 'openid profile email'}
@@ -31,7 +31,7 @@ db = redis.Redis(host='makapakaapp_redis-db_1',
 log = app.logger
 jwt = JWTManager(app)
 JWT_SECRET = os.getenv('JWT_SECRET')
-app.secret_key = 'nou2fdi47hicmxxx43h9xh92h7972hksj39'
+app.secret_key = os.environ.get('SESSION_SECRET_KEY')
 
 
 @app.route('/')
