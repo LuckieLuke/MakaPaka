@@ -18,7 +18,6 @@ self.addEventListener("fetch", (event) => {
         try {
             let responseFromNetwork = await fetch(event.request);
             return responseFromNetwork;
-
         } catch (error) {
             console.log("Caught error during fetch", error);
             let cache = await caches.open(CACHE_NAME);

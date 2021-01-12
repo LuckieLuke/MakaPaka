@@ -8,20 +8,32 @@ from datetime import timedelta, datetime
 import random
 import string
 import os
+from authlib.integrations.flask_client import OAuth
 
 
 app = Flask(__name__, static_url_path='')
+oauth = OAuth(app)
+
+auth0 = oauth.register(
+    'makapakaapp',
+    api_base_url='https://makapaka.eu.auth0.com',
+    client_id='injZ4aCCaRZqAESwn2rmuXNxqRdcHL4g',
+    client_secret='d320QTd8FVPMRdDdziRdzHAFQWtdbT6Lf4U23-e-YcS1MeCdsdV727opDd2BMEWO',
+    access_token_url='https://makapaka.eu.auth0.com/oauth/token',
+    authorize_url='https://makapaka.eu.auth0.com/authorize',
+    client_kwargs={'scope': 'openid profile email'}
+)
 
 db = redis.Redis(host='makapakaapp_redis-db_1',
                  port=6379, decode_responses=True)
 log = app.logger
-ACCESS_EXPIRATION_TIME = 60*600
-SESSION_EXPIRATION_TIME = 60*600
+ACCESS_EXPIRATION_TIME = 60*10
+SESSION_EXPIRATION_TIME = 60*10
 
 jwt = JWTManager(app)
 JWT_SECRET = os.getenv('JWT_SECRET')
 app.secret_key = os.environ.get('SESSION_SECRET_KEY')
-app.permanent_session_lifetime = timedelta(minutes=600)
+app.permanent_session_lifetime = timedelta(minutes=10)
 app.session_cookie_secure = True
 
 
@@ -34,7 +46,7 @@ def login():
 
 
 @ app.route('/auth', methods=['POST'])
-def authorize():
+def auth():
     if 'username' not in session:
         login = request.form['login'].encode('utf-8')
         hashed_login = hashlib.sha512(login).hexdigest()
@@ -47,7 +59,8 @@ def authorize():
             if hashed_pass == correct_password:
                 session['username'] = hashed_login
                 session.permanent = True
-                response = make_response(redirect('https://localhost:8080/'))
+                response = make_response(
+                    redirect('https://localhost:8080/'), 200)
                 exp = datetime.now() + timedelta(seconds=ACCESS_EXPIRATION_TIME)
                 secret = ''.join(random.choice(
                     string.ascii_lowercase + string.digits) for _ in range(32))
@@ -68,6 +81,32 @@ def authorize():
 
                 return response
 
-        return render_template('login.html', valid=False)
+        return make_response('invalid login', 404)
     else:
         return redirect('https://localhost:8080/')
+
+
+@app.route('/loginoauth')
+def logingoogle():
+    redirect_url = url_for('authorize', _external=True)
+    return auth0.authorize_redirect(redirect_url)
+
+
+@app.route('/authorize')
+def authorize():
+    token = auth0.authorize_access_token()
+    resp = auth0.get('userinfo')
+    user_info = resp.json()
+    app.logger.debug(resp.json())
+
+    hash_login = hashlib.sha512(
+        user_info['nickname'].encode('utf-8')).hexdigest()
+    session['username'] = hash_login
+    if not db.exists(hash_login):
+        file_code = ''.join(random.choice(
+            string.ascii_lowercase + string.digits) for _ in range(32))
+        data = {'login': hash_login, 'files': file_code, }
+        db.hmset(hash_login, data)
+        db.lpush('users', hash_login)
+
+    return redirect('https://localhost:8080')

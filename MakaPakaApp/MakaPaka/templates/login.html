@@ -41,19 +41,17 @@
                 <div class="whole-form-inside">
                     <div class="form-part">
                         <div class="input-group">
-                            <input id="login" type="text" name="login" class="form-input" placeholder="Imię">
+                            <input id="login" type="text" name="login" class="form-input" placeholder="login">
                             <label for="login" class="form-label">Login</label>
                         </div>
 
                         <div class="input-group">
                             <input id="password" type="password" name="password" class="form-input"
-                                placeholder="Nazwisko">
+                                placeholder="password">
                             <label for="password" class="form-label">Hasło</label>
                         </div>
 
-                        {% if not valid %}
-                        <label>Niepoprawny login lub hasło!</label>
-                        {% endif %}
+                        <label id="msg"></label>
 
                         <a href="https://localhost:8080/register">Nie mam konta!</a>
 
@@ -63,8 +61,10 @@
                 </div>
             </form>
         </section>
+        <a href="/loginoauth"><button class="btn btn-success">Zaloguj przez Google</button></a>
     </section>
 
+    <script src="scripts/session.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>

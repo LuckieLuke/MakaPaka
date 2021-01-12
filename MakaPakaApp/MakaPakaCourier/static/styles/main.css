@@ -29,6 +29,14 @@ h1 {
     font-family: 'Lobster', cursive;
 }
 
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
 /* form */
 
 input, textarea, select, button {

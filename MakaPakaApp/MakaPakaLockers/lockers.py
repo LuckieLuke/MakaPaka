@@ -43,9 +43,13 @@ def senddata():
         db.hset('files', package + '_status', 'oczekująca w paczkomacie')
         db.rpush(locker, package)
     else:
-        return render_template('send.html', msg='Błędne dane! Spróbuj jeszcze raz.')
+        resp = make_response(render_template(
+            'send.html', msg='Błędne dane! Spróbuj jeszcze raz.'), 404)
+        return resp
 
-    return render_template('send.html', msg='Paczka dodana do paczkomatu')
+    resp = make_response(render_template(
+        'send.html', msg='Paczka dodana do paczkomatu'), 200)
+    return resp
 
 
 @app.route('/takeout')
@@ -149,6 +153,17 @@ def takepackages():
         db.lrem(locker, 0, package)
 
     return resp
+
+
+@app.route('/GET/uname')
+def get_uname():
+    token = request.cookies.get('courier_access')
+
+    if not valid(token):
+        return make_response({'uname': 'nobody'}, 404)
+
+    token = decode(token, JWT_SECRET)
+    return make_response({'uname': token['uname']}, 200)
 
 
 def valid(token):

@@ -78,3 +78,21 @@ function next() {
     window.location.href = nextURL
     getData()
 }
+
+var ws_uri = 'https://localhost:8090'
+socket = io.connect(ws_uri)
+
+async function setSession() {
+    const resp = await fetch('https://localhost:8085/GET/uname')
+    if (resp.ok) {
+        const data = await resp.json()
+        sessionStorage.setItem('uname', data['uname'])
+        socket.emit('join', { 'room_id': data['uname'], 'useragent': navigator.userAgent })
+    }
+}
+
+setSession()
+
+socket.on('refresh_packages', () => {
+    window.location.reload()
+})

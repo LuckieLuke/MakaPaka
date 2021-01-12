@@ -32,6 +32,7 @@ body {
 
 .form {
     width: 100%;
+    justify-items: center;
 }
 
 .login-form {
@@ -141,4 +142,19 @@ input:-webkit-autofill:active  {
 /* reset input */
 .form-input:required, .form-input:invalid {
     box-shadow: none;
+}
+
+form a {
+    margin: 1%;
+    color: white;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+    color: azure;
+}
+
+.container > a {
+    margin: 1%;
 }

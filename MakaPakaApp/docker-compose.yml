@@ -50,3 +50,11 @@ services:
       JWT_SECRET: $JWT_SECRET
   redis-db:
     image: "redis:alpine"
+  web-socket:
+    build:
+      context: .
+      dockerfile: ./Docker/socket/Dockerfile
+    ports: ["8090:8890"]
+    volumes: [./MakaPakaSockets:/MakaPakaSockets]
+    environment:
+      FLASK_ENV: development

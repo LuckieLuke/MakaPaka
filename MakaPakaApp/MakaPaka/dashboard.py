@@ -17,13 +17,13 @@ from flask_cors import CORS, cross_origin
 
 app = Flask(__name__, static_url_path='')
 cors = CORS(app)
-app.permanent_session_lifetime = timedelta(minutes=600)
+app.permanent_session_lifetime = timedelta(minutes=10)
 
 db = redis.Redis(host='makapakaapp_redis-db_1',
                  port=6379, decode_responses=True)
 log = app.logger
-ACCESS_EXPIRATION_TIME = 60*600
-SESSION_EXPIRATION_TIME = 60*600
+ACCESS_EXPIRATION_TIME = 60*10
+SESSION_EXPIRATION_TIME = 60*10
 
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = ACCESS_EXPIRATION_TIME
@@ -44,7 +44,7 @@ def setup():
 @app.route('/package/<string:name>')
 def show_file(name):
     token = request.cookies.get('access')
-    if valid(token):
+    if valid(token) and decode(token, JWT_SECRET)['uname'] == session['username']:
         data = db.hget(FILES, name[:-4] + '_data')
         if data is None:
             abort(400)

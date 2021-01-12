@@ -19,13 +19,13 @@ app = Flask(__name__, static_url_path='')
 db = redis.Redis(host='makapakaapp_redis-db_1',
                  port=6379, decode_responses=True)
 log = app.logger
-ACCESS_EXPIRATION_TIME = 60*600
-SESSION_EXPIRATION_TIME = 60*600
+ACCESS_EXPIRATION_TIME = 60*10
+SESSION_EXPIRATION_TIME = 60*10
 
 jwt = JWTManager(app)
 JWT_SECRET = os.getenv('JWT_SECRET')
 app.secret_key = os.environ.get('SESSION_SECRET_KEY')
-app.permanent_session_lifetime = timedelta(minutes=600)
+app.permanent_session_lifetime = timedelta(minutes=10)
 app.session_cookie_secure = True
 
 FILES = 'files'
@@ -149,7 +149,7 @@ def logout():
                             secure=True, httponly=True)
         return response
     else:
-        redirect(url_for('home'))
+        return redirect(url_for('home'))
 
 
 @app.route('/packages')
@@ -225,9 +225,9 @@ def add_waybill():
     log.debug('Request form: {}.'.format(form))
 
     waybill = to_waybill(form)
-    save_waybill(waybill, form)
+    name = save_waybill(waybill, form)
 
-    return redirect('https://localhost:8080/packages?fromIndex=0&toIndex=3')
+    return make_response({'name': name}, 200)
 
 
 def to_waybill(form):
@@ -297,6 +297,8 @@ def save_waybill(waybill, form):
             str(datetime.now() + timedelta(hours=1)))
     db.hset(FILES, filename[:-4] + '_status', 'nowa')
 
+    return filename
+
 
 def valid(token):
     try:
@@ -358,11 +360,12 @@ def server_error(error):
     return render_template("errors/500.html", error=error)
 
 
-@app.route('/decode')
-def getInfo():
-    access_token = request.cookies.get('access')
-    info = decode(access_token, JWT_SECRET)
-    return info
+@app.route('/GET/username')
+def get_username():
+    if 'username' in session:
+        return make_response({'username': session['username']}, 200)
+    else:
+        return make_response({'username': 'nobody'}, 404)
 
 
 @app.route('/generate')

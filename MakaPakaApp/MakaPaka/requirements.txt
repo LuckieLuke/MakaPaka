@@ -7,3 +7,5 @@ pyjwt
 fpdf
 flask-cors
 flask-swagger
+authlib
+requests

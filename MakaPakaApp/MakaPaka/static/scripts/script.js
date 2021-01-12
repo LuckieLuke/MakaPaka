@@ -87,8 +87,6 @@ function getRegisterResponseData(response) {
 function displayInConsoleCorrectResponse(correctResponse) {
     let status = correctResponse.registration_status;
 
-    console.log("Status: " + status);
-
     if (status !== "OK") {
         console.log("Errors: " + correctResponse.errors);
     }
@@ -99,11 +97,9 @@ function prepareAllFieldsValidators() {
         var loginInput = loginField.value.trim();
 
         if (isProperLogin()) {
-            console.log("spoko login");
             updateLoginAvailabilityMessage();
         }
         else if (loginInput.length > 0) {
-            console.log("nie spoko");
             updateLoginAvailabilityMessage();
         }
         else if (loginInput.length == 0) {

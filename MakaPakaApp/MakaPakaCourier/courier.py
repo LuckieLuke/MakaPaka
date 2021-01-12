@@ -10,15 +10,28 @@ import datetime
 from datetime import timedelta, datetime
 import string
 import random
+from authlib.integrations.flask_client import OAuth
 
 
 app = Flask(__name__, static_url_path='')
+oauth = OAuth(app)
+
+auth0 = oauth.register(
+    'makapakaapp',
+    api_base_url='https://makapaka.eu.auth0.com',
+    client_id='I2UWn9Woc1WYFYt02oP0mlpxIpeSEkiK',
+    client_secret='s56-ibhxFRf56YQTkaJz6kupgj-wdBAPnoBNIKgv3eyYmLuoXq_FKl799mn2Vv38',
+    access_token_url='https://makapaka.eu.auth0.com/oauth/token',
+    authorize_url='https://makapaka.eu.auth0.com/authorize',
+    client_kwargs={'scope': 'openid profile email'}
+)
 
 db = redis.Redis(host='makapakaapp_redis-db_1',
                  port=6379, decode_responses=True)
 log = app.logger
 jwt = JWTManager(app)
 JWT_SECRET = os.getenv('JWT_SECRET')
+app.secret_key = 'nou2fdi47hicmxxx43h9xh92h7972hksj39'
 
 
 @app.route('/')
@@ -69,9 +82,9 @@ def take_package():
     if db.hget('files', package + '_status') == 'nowa':
         db.lpush(packages_code, package)
         db.hset('files', package + '_status', 'przekazana kurierowi')
-        return render_template('take.html', msg='Paczka odebrana!')
+        return make_response({'package': package}, 200)
     else:
-        return render_template('take.html', msg='Paczka nie posiada statusu "nowa"!')
+        return make_response({'package': package}, 404)
 
 
 @app.route('/code')
@@ -102,7 +115,7 @@ def generate():
 
 
 @app.route('/auth', methods=['POST'])
-def authorize():
+def auth():
     login = request.form['login']
     password = request.form['password'].encode('utf-8')
     hashed_pass = hashlib.sha512(password).hexdigest()
@@ -124,6 +137,52 @@ def authorize():
             return resp
         return render_template('main.html', msg='Błędne dane logowania!')
     return render_template('main.html', msg='Błędne dane logowania!')
+
+
+@app.route('/loginoauth')
+def logingoogle():
+    redirect_url = url_for('authorize', _external=True)
+    return auth0.authorize_redirect(redirect_url)
+
+
+@app.route('/authorize')
+def authorize():
+    token = auth0.authorize_access_token()
+    resp = auth0.get('userinfo')
+    user_info = resp.json()
+    app.logger.debug(resp.json())
+
+    name = resp.json()['nickname']
+
+    if name not in db.lrange('couriers', 0, -1):
+        data = {}
+        data['username'] = name
+        data['packages'] = uuid.uuid4().hex
+        data['tokens'] = uuid.uuid4().hex
+        db.lpush('couriers', name)
+        db.hmset(name, data)
+
+    exp = datetime.now() + timedelta(seconds=600)
+    secret = ''.join(random.choice(
+        string.ascii_lowercase + string.digits) for _ in range(32))
+    access_token = encode(
+        {'uname': name, 'exp': exp,
+         'secret': secret, 'packages': db.hget(name, 'packages')}, JWT_SECRET, 'HS256'
+    )
+    resp = make_response(redirect(url_for('options')))
+    resp.set_cookie(
+        'courier_login', access_token, max_age=600, secure=True, httponly=True
+    )
+    return resp
+
+
+@app.route('/logout')
+def logout():
+    resp = make_response(redirect(url_for('home')))
+    resp.set_cookie(
+        'courier_login', '', max_age=-1, secure=True, httponly=True
+    )
+    return resp
 
 
 @app.route('/packages')
@@ -174,6 +233,17 @@ def packagesFromTo():
     data['next'] = url + nextParams
 
     return data
+
+
+@app.route('/GET/uname')
+def get_uname():
+    token = request.cookies.get('courier_login')
+
+    if not valid(token):
+        return make_response({'uname': 'nobody'}, 404)
+
+    token = decode(token, JWT_SECRET)
+    return make_response({'uname': token['uname']}, 200)
 
 
 def valid(token):

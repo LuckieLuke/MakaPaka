@@ -11,6 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script>
+
     <link rel="icon" href="images/poop-white.png" type="image/x-icon" />
     <link rel="stylesheet" href="styles/take.css" />
 </head>
@@ -33,16 +36,14 @@
             </div>
             <div class="right">
                 <h1>Odbierz</h1>
-                <form action="/takepackage" , method="POST">
+                <form action="/takepackage" class="take-form" method="POST">
                     <div class="form-wrapper">
                         <label for="package">ID paczki</label>
                         <input type="text" class="form-control" name="package" pattern="[a-zA-Z0-9]+" required>
                     </div>
                     <button>Zapisz</button>
                 </form>
-                {% if msg %}
-                <h6>{{msg}}</h6>
-                {% endif %}
+                <h6 id="msg"></h6>
             </div>
         </div>
     </main>
@@ -53,6 +54,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
+    <script src="scripts/take.js"></script>
 </body>
 
 </html>

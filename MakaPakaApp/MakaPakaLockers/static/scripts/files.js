@@ -1,6 +1,8 @@
 var prevURL = '';
 var nextURL = '';
 const saveButton = document.getElementById("save");
+var ws_uri = 'https://localhost:8090'
+socket = io.connect(ws_uri)
 
 saveButton.addEventListener("click", function () {
     var packages = []
@@ -8,26 +10,40 @@ saveButton.addEventListener("click", function () {
     for (let package in archive) {
         if (archive[package] === 'true') {
             packages.push(package)
+            takeAsync(package)
         }
     }
 
-    var courierUrl = 'https://localhost:8087/POST/takepackages'
+    setTimeout(() => {
+        socket.emit('new_package', { 'room_id': sessionStorage.getItem('uname'), 'useragent': navigator.userAgent })
+    }, 500)
 
-    var actionParams = {
-        method: 'POST',
-        body: JSON.stringify(packages),
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    }
+    setTimeout(() => {
+        var courierUrl = 'https://localhost:8087/POST/takepackages'
 
-    fetch(courierUrl, actionParams)
-        .then(resp => resp.json())
-        .catch(err => console.log(err))
+        var actionParams = {
+            method: 'POST',
+            body: JSON.stringify(packages),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }
 
-    window.location.href = 'https://localhost:8087/'
-
+        takeFetch(courierUrl, actionParams)
+    }, 500)
 })
+
+async function takeFetch(courierUrl, actionParams) {
+    const resp = await fetch(courierUrl, actionParams)
+    if (resp.ok) {
+        window.location.href = 'https://localhost:8087/'
+    }
+}
+
+const takeAsync = async (package) => {
+    await socket.emit('join', { 'room_id': package, 'useragent': navigator.userAgent })
+    await socket.emit('putout', { 'package_id': package })
+}
 
 function allStorage() {
     var archive = {},
@@ -115,3 +131,15 @@ function next() {
     window.location.href = nextURL
     getData()
 }
+
+async function setSession() {
+    const resp = await fetch('https://localhost:8087/GET/uname')
+    if (resp.ok) {
+        const data = await resp.json()
+        sessionStorage.setItem('uname', data['uname'])
+        socket.emit('join', { 'room_id': data['uname'], 'useragent': navigator.userAgent })
+    }
+}
+
+setSession()
+
