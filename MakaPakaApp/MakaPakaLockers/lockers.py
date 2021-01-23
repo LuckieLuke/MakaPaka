@@ -64,11 +64,10 @@ def authorize_courier():
     courier = None
 
     if db.ttl(token) > 0 and locker in db.lrange('lockers', 0, -1):
-        for i in range(5):
-            tokens = db.hget('courier' + str(i), 'tokens')
-
+        for c in db.lrange('couriers', 0, -1):
+            tokens = db.hget(c, 'tokens')
             if token == db.get(tokens):
-                courier = 'courier' + str(i)
+                courier = c
                 break
 
         response = make_response(
